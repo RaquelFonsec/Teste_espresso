@@ -34,13 +34,15 @@ group :development, :test do
   
   # Choose one or two HTTP libraries
   gem 'http'
+  gem 'rest-client'
+  
+  # Ensure httparty is available in development, test, and production
   gem 'httparty'
-   gem 'rest-client'
 end
 
 # Development-only gems
 group :development do
   # Uncomment if needed
-   gem "spring"
-   gem "rack-cors"
+  gem "spring"
+  gem "rack-cors"
 end
