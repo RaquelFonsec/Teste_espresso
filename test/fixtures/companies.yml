@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  erp: MyString
+  erp_key: MyString
+  erp_secret: MyString
+
+two:
+  erp: MyString
+  erp_key: MyString
+  erp_secret: MyString
