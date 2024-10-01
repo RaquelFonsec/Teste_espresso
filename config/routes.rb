@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   post 'webhooks/notify_client_validity', to: 'webhooks#notify_client_validity'  # Notificação da validade do cliente
   post 'webhooks/reimbursements', to: 'webhooks#reimbursements'  # Notificação de reembolsos
   post 'webhooks/create_refund', to: 'webhooks#create_refund'  # Criação de reembolso via webhook
-
+  post 'webhooks/omie', to: 'webhooks#omie'
   # Namespace API para organização das rotas de clientes e finanças
   namespace :api do
     namespace :v1 do
