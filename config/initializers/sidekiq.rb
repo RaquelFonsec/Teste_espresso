@@ -3,11 +3,13 @@ require 'sidekiq/web'
 
 # Configurando o Sidekiq para usar Redis
 Sidekiq.configure_server do |config|
-  config.redis = { url: 'redis://localhost:6379/0' }
+  # Use a variável de ambiente para o Redis no Heroku
+  config.redis = { url: ENV['REDIS_URL'], namespace: 'my_app' }
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: 'redis://localhost:6379/0' }
+  # Use a variável de ambiente para o Redis no Heroku
+  config.redis = { url: ENV['REDIS_URL'], namespace: 'my_app' }
 end
 
 # Configurando o Active Job para usar o Sidekiq
