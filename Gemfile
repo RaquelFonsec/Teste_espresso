@@ -34,7 +34,7 @@ group :development, :test do
   
   # Choose one or two HTTP libraries
   gem 'http'
-   gem 'httparty'
+  gem 'httparty'
    gem 'rest-client'
 end
 
