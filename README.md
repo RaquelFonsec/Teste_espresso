@@ -136,7 +136,9 @@ Requisição:
 
 { "codigo_cliente_integracao": "CodigoInterno0001", "email": "primeiro@ccliente.com.br", "razao_social": "Primeiro Cliente Ltda Me", "nome_fantasia": "Primeiro Cliente" }
 
+
 Parâmetros:
+
 
 codigo_cliente_integracao: Identificador único do cliente.
 email: Endereço de e-mail do cliente.
@@ -145,6 +147,8 @@ nome_fantasia: Nome pelo qual a empresa é conhecida.
 Resposta (Exemplo):
 
 { "codigo_cliente_omie": 0000001, "codigo_cliente_integracao": "222", "codigo_status": "0", "descricao_status": "Cliente cadastrado com sucesso!" }
+
+
 
 Endpoint: Busca de Categorias
 
@@ -163,6 +167,8 @@ Embora a busca retorne várias categorias do tipo "D", a categoria usada para as
 Código: 2.01.04
 Endpoint: Listar Conta Corrente
 
+
+
 URL: https://app.omie.com.br/api/v1/geral/contacorrente/
 
 Método: POST
@@ -177,6 +183,8 @@ Na resposta, busque pelo campo nCodCC que representa o código da conta corrente
 
 Utilize o valor obtido no campo nCodCC como referência ao registrar transações ou ao associar a conta corrente com outras operações.
 
+
+
 Fluxo de Criação de Contas a Pagar
 
 URL: https://app.omie.com.br/api/v1/financas/contapagar/
@@ -186,6 +194,7 @@ Método: POST
 Requisição:
 
 { "codigo_lancamento_integracao": "", "codigo_cliente_fornecedor": "CODIGO", "data_vencimento": "YYYY-MM-DD", "valor_documento": "XXX", "codigo_categoria": "CODIGO_CATEGORIA", "data_previsao": "YYYY-MM-DD", "id_conta_corrente": "ID_CONTA_CORRENTE" }
+
 
 
 Instruções para Preencher os Campos
@@ -212,11 +221,15 @@ ENV["APP_SECRET"]: Segredo da aplicação, também obtido das variáveis de ambi
 "138": Código do cliente integração que está sendo validado. (Exemplo)
 Uso do Webhook
 
+
 Durante esse processo, a aplicação será notificada através do seguinte webhook: https://eo2180vhu0thrzi.m.pipedream.net/. É importante garantir que o webhook esteja configurado para receber notificações sobre o status da validação.
+
 
 Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
 
+
 Resumo da Classe ValidateClientJob (FLUXO DO CLIENTE INTEGRADOR)
+
 
 A classe ValidateClientJob é responsável por validar as credenciais de integração de um cliente com um sistema ERP através da API da Omie. Aqui estão os principais pontos da classe:
 
@@ -224,16 +237,20 @@ Configuração da Fila: O job é enfileirado na fila padrão (default).
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
 Método perform:
 
+
 Executa a validação, registra no log e chama o método validate_credentials.
 Método validate_credentials:
+
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
 Método handle_validation_failure:
 
+
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
 Notifica sobre falha se o limite máximo de tentativas for atingido.
 Método notify_espresso:
+
 
 Envia uma notificação ao endpoint designado (Espresso) com o status da validação.
 Registra no log o resultado da tentativa de notificação.
@@ -275,6 +292,8 @@ codigo_lancamento_integracao: Código de integração que pode ser utilizado par
 client_code: Código do cliente que pode ser utilizado para identificar rapidamente as informações do cliente no sistema, especialmente útil para integração com outros sistemas.
 
 categoria: "D" Representa a categoria da conta a pagar, que pode ser usada para fins de classificação contábil ou relatório
+
+
 
 **Resumo do Fluxo de Criação de Contas a Pagar**
 
