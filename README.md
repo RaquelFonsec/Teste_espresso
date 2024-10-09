@@ -103,241 +103,139 @@ git clone https://github.com/RaquelFonsec/Teste_espresso.git
 
 cd Teste_espresso
 
-
-# Instala todas as dependências do projeto
-
+Instala todas as dependências do projeto
 bundle install
 
+Cria o banco de dados
+rails db
 
-# Cria o banco de dados
+Executa as migrações para criar as tabelas no banco de dados
+rails db
 
-rails db:create
-
-
-# Executa as migrações para criar as tabelas no banco de dados
-
-rails db:migrate
-
-
-# Inicia o servidor Redis
-
+Inicia o servidor Redis
 redis-server
 
-# Inicia o Sidekiq em segundo plano
-
+Inicia o Sidekiq em segundo plano
 bundle exec sidekiq
 
-# Inicia o servidor Rails
-
+Inicia o servidor Rails
 rails server
 
-# Executa os testes com RSpec
-
+Executa os testes com RSpec
 bundle exec rspec
 
-## Uso da API
+Uso da API
 
-### Endpoint: Configuração do Cliente Integrador
+Endpoint: Configuração do Cliente Integrador
 
-**URL:** `https://app.omie.com.br/api/v1/geral/clientes/`
+URL: https://app.omie.com.br/api/v1/geral/clientes/
 
-**Método:** `POST`
+Método: POST
 
-**Requisição:**
+Requisição:
 
-```json
-
-{
-
-"codigo_cliente_integracao": "CodigoInterno0001",
-
-"email": "primeiro@ccliente.com.br",
-
-"razao_social": "Primeiro Cliente Ltda Me",
-
-"nome_fantasia": "Primeiro Cliente"
-
-}
+{ "codigo_cliente_integracao": "CodigoInterno0001", "email": "primeiro@ccliente.com.br", "razao_social": "Primeiro Cliente Ltda Me", "nome_fantasia": "Primeiro Cliente" }
 
 Parâmetros:
 
 codigo_cliente_integracao: Identificador único do cliente.
-
 email: Endereço de e-mail do cliente.
-
 razao_social: Nome completo da empresa.
-
 nome_fantasia: Nome pelo qual a empresa é conhecida.
-
 Resposta (Exemplo):
 
-{
+{ "codigo_cliente_omie": 0000001, "codigo_cliente_integracao": "222", "codigo_status": "0", "descricao_status": "Cliente cadastrado com sucesso!" }
 
-"codigo_cliente_omie": 0000001,
+Endpoint: Busca de Categorias
 
-"codigo_cliente_integracao": "222",
+URL: https://app.omie.com.br/api/v1/geral/categorias/
 
-"codigo_status": "0",
+Método: POST
 
-"descricao_status": "Cliente cadastrado com sucesso!"
+Requisição:
 
-}
-
-### **Endpoint: Busca de Categorias**
-
-**URL:** `https://app.omie.com.br/api/v1/geral/categorias/`
-
-**Método:** `POST`
-
-
-*Requisição:**
-
-```json
-
-{
-
-"pagina": 1,
-
-"registros_por_pagina": 50,
-
-"filtrar_por_tipo": "D"
-
-}
+{ "pagina": 1, "registros_por_pagina": 50, "filtrar_por_tipo": "D" }
 
 Identificação da Categoria Correta
 
 Embora a busca retorne várias categorias do tipo "D", a categoria usada para associar a despesas de serviços neste projeto é a seguinte:
 
 Código: 2.01.04
+Endpoint: Listar Conta Corrente
 
-### **Endpoint: Listar Conta Corrente**
+URL: https://app.omie.com.br/api/v1/geral/contacorrente/
 
-**URL:** `https://app.omie.com.br/api/v1/geral/contacorrente/`
+Método: POST
 
+Requisição:
 
-**Método:** `POST`
-
-**Requisição:**
-
-```json
-
-{
-
-"pagina": 1,
-
-"registros_por_pagina": 50
-
-}
+{ "pagina": 1, "registros_por_pagina": 50 }
 
 Faça uma requisição ao endpoint api/v1/geral/contacorrente/ para listar todas as contas correntes disponíveis.
 
 Na resposta, busque pelo campo nCodCC que representa o código da conta corrente.
 
-Utilize o valor obtido no campo nCodCC como referência ao registrar transações ou ao associar a conta corrente com outras operações
+Utilize o valor obtido no campo nCodCC como referência ao registrar transações ou ao associar a conta corrente com outras operações.
 
+Fluxo de Criação de Contas a Pagar
 
-### **Fluxo de Criação de Contas a Pagar**
+URL: https://app.omie.com.br/api/v1/financas/contapagar/
 
-**URL:** `https://app.omie.com.br/api/v1/financas/contapagar/`
+Método: POST
 
-**Método:** `POST`
+Requisição:
 
-  
-
-**Requisição:**
-
-```json
-
-{
-
-"codigo_lancamento_integracao": "",
-
-"codigo_cliente_fornecedor": "CODIGO",
-
-"data_vencimento": "YYYY-MM-DD",
-
-"valor_documento": "XXX",
-
-"codigo_categoria": "CODIGO_CATEGORIA",
-
-"data_previsao": "YYYY-MM-DD",
-
-"id_conta_corrente": "ID_CONTA_CORRENTE"
-
-}
-
+{ "codigo_lancamento_integracao": "", "codigo_cliente_fornecedor": "CODIGO", "data_vencimento": "YYYY-MM-DD", "valor_documento": "XXX", "codigo_categoria": "CODIGO_CATEGORIA", "data_previsao": "YYYY-MM-DD", "id_conta_corrente": "ID_CONTA_CORRENTE" }
 
 Instruções para Preencher os Campos
 
-Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher os campos com os valores obtidos nas etapas anteriores
+Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher os campos com os valores obtidos nas etapas anteriores.
 
+Execução da Validação do Cliente Integrador
 
-### Execução da Validação do Cliente Integrador
+Para executar a tarefa de validação do cliente integrador, essa tarefa é fundamental para assegurar que as informações do cliente estejam corretamente cadastradas e sincronizadas com a API do Omie.
 
- 
-Para executar a tarefa de validação do cliente integrador. Essa tarefa é fundamental para assegurar que as informações do cliente estejam corretamente cadastradas e sincronizadas com a API do Omie.
-
-#### Comando de Execução
-
-```bash
+Comando de Execução
 
 ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138") (exemplo via rails c)
 
 bundle exec rails runner -e development 'ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138")' ou via terminal
 
-
 1: ID do cliente que você deseja validar.
-
 "omie": Nome da aplicação que está realizando a validação.
-
 ENV["APP_KEY"]: Chave da aplicação obtida das variáveis de ambiente, utilizada para autenticação na API do Omie.
-
 ENV["APP_SECRET"]: Segredo da aplicação, também obtido das variáveis de ambiente, para autenticação.
-
-"138": Código do cliente integração que está sendo validado.(Exemplo)
-
+"138": Código do cliente integração que está sendo validado. (Exemplo)
 Uso do Webhook
 
- 
-Durante esse processo, a aplicação será notificada através do seguinte webhook: https://eo2180vhu0thrzi.m.pipedream.net/. É importante garantir que o webhook esteja configurado para receber notificações sobre o status da validação
+Durante esse processo, a aplicação será notificada através do seguinte webhook: https://eo2180vhu0thrzi.m.pipedream.net/. É importante garantir que o webhook esteja configurado para receber notificações sobre o status da validação.
 
 Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
-
 
 Resumo da Classe ValidateClientJob (FLUXO DO CLIENTE INTEGRADOR)
 
 A classe ValidateClientJob é responsável por validar as credenciais de integração de um cliente com um sistema ERP através da API da Omie. Aqui estão os principais pontos da classe:
 
 Configuração da Fila: O job é enfileirado na fila padrão (default).
-
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
-
 Método perform:
 
 Executa a validação, registra no log e chama o método validate_credentials.
-
-Notifica o sistema externo (Espresso) sobre o sucesso ou falha da validação.
-
 Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
-
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
-
 Método handle_validation_failure:
 
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
-
 Notifica sobre falha se o limite máximo de tentativas for atingido.
-
 Método notify_espresso:
 
 Envia uma notificação ao endpoint designado (Espresso) com o status da validação.
-
 Registra no log o resultado da tentativa de notificação.
 
 
-**Fluxo de Criação de Contas a Pagar**
+Fluxo de Criação de Contas a Pagar
 
 O fluxo de criação de contas a pagar tem como objetivo registrar os reembolsos aprovados no sistema Espresso e criar as respectivas contas a pagar no ERP Omie. Esse processo é essencial para garantir que as transações financeiras sejam adequadamente registradas e que o fluxo de caixa da empresa seja mantido em ordem
 
