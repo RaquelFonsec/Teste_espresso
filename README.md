@@ -61,49 +61,49 @@ cd Teste_espresso
 
   
 
-# Instala todas as dependências do projeto
+ Instala todas as dependências do projeto
 
 bundle install
 
   
 
-# Cria o banco de dados
+ Cria o banco de dados
 
 rails db:create
 
   
 
-# Executa as migrações para criar as tabelas no banco de dados
+ Executa as migrações para criar as tabelas no banco de dados
 
 rails db:migrate
 
   
 
-# Inicia o servidor Redis
+ Inicia o servidor Redis
 
 redis-server
 
   
 
-# Inicia o Sidekiq em segundo plano
+ Inicia o Sidekiq em segundo plano
 
 bundle exec sidekiq
 
   
 
-# Inicia o servidor Rails
+ Inicia o servidor Rails
 
 rails server
 
   
 
-# Executa os testes com RSpec
+ Executa os testes com RSpec
 
 bundle exec rspec
 
   
 
-## Uso da API
+ Uso da API
 
   
 
