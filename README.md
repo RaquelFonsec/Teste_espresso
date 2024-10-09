@@ -165,9 +165,10 @@ Identificação da Categoria Correta
 Embora a busca retorne várias categorias do tipo "D", a categoria usada para associar a despesas de serviços neste projeto é a seguinte:
 
 Código: 2.01.04
+
+
+
 Endpoint: Listar Conta Corrente
-
-
 
 URL: https://app.omie.com.br/api/v1/geral/contacorrente/
 
@@ -182,6 +183,7 @@ Faça uma requisição ao endpoint api/v1/geral/contacorrente/ para listar todas
 Na resposta, busque pelo campo nCodCC que representa o código da conta corrente.
 
 Utilize o valor obtido no campo nCodCC como referência ao registrar transações ou ao associar a conta corrente com outras operações.
+
 
 
 
@@ -200,6 +202,8 @@ Requisição:
 Instruções para Preencher os Campos
 
 Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher os campos com os valores obtidos nas etapas anteriores.
+
+
 
 Execução da Validação do Cliente Integrador
 
