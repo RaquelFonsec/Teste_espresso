@@ -1,71 +1,70 @@
 class ValidateClientJob < ApplicationJob
   queue_as :default
 
-  MAX_RETRIES = 3
+  MAX_RETRIES = 3 # Número máximo de tentativas de retentativa
 
-  def perform(client_id)
-    client = Client.find(client_id)
-    
-    validation_result = ClientValidationService.validate_keys(client.app_key, client.app_secret)
+  def perform(company_id, erp, erp_key, erp_secret, integration_code, attempt = 1)
+    Rails.logger.info "Executing ValidateClientJob for #{company_id}"
+    Rails.logger.info("Tentativa #{attempt} de validação das credenciais para o cliente #{integration_code}.")
 
-    # Notificar o resultado da validação
-    notify_validation(client.id, validation_result)
+    response = validate_credentials(erp, erp_key, erp_secret)
+
+    if response.success?
+      Rails.logger.info("Credenciais válidas para o cliente #{integration_code}.")
+      notify_espresso(integration_code, status: 'success', company_id: company_id)
+    else
+      handle_validation_failure(attempt, company_id, erp, erp_key, erp_secret, integration_code)
+    end
+  rescue StandardError => e
+    Rails.logger.error("Erro ao validar credenciais: #{e.message}")
+    notify_espresso(integration_code, status: 'failure', error: e.message, company_id: company_id)
   end
 
   private
-  
-  def notify_validation(client_id, validation_result)
-    webhook_url = "https://0a12-2a02-a474-b1c4-1-c97d-bd11-cecd-4945.ngrok-free.app/webhooks/subscribe"
-    return unless webhook_url
-  
-    HTTParty.post(webhook_url, body: {
-      client_id: client_id,
-      success: validation_result[:success],
-      message: validation_result[:message]
-    }.to_json, headers: { 'Content-Type' => 'application/json' })
-  end
-  
-  def validate_credentials_with_erp(erp, erp_key, erp_secret)
-    response = HTTParty.post("https://api.#{erp}.com/validate", {
-      body: {
-        key: erp_key,
-        secret: erp_secret
-      }.to_json,
-      headers: { 'Content-Type' => 'application/json' }
+
+  def validate_credentials(erp, erp_key, erp_secret)
+    response = HTTParty.get('https://app.omie.com.br/api/v1/geral/clientes/', {
+      query: { erp: erp, erp_key: erp_key, erp_secret: erp_secret }
     })
 
-    if response.success?
-      { success: true, message: 'Credenciais válidas.' }
+    # Verificando se a resposta é bem-sucedida e se o formato é esperado
+    if response.success? && response.parsed_response
+      return response
     else
-      { success: false, message: 'Credenciais inválidas.', error: response.body }
+      # Logando detalhes da falha
+      Rails.logger.error("Erro ao validar credenciais: #{response.code} - #{response.body}")
+      raise "Erro ao validar credenciais: #{response.code} - #{response.body}"
     end
   end
 
-  def notify_espresso(client_id, message, status)
+  def handle_validation_failure(attempt, company_id, erp, erp_key, erp_secret, integration_code)
+    if attempt < MAX_RETRIES
+      Rails.logger.warn("Servidor indisponível ao validar credenciais para o cliente #{integration_code}. Retentativa #{attempt + 1}.")
+      self.class.set(wait: (attempt + 1).minutes).perform_later(company_id, erp, erp_key, erp_secret, integration_code, attempt + 1)
+    else
+      Rails.logger.error("Falha ao validar credenciais para o cliente #{integration_code} após #{MAX_RETRIES} tentativas.")
+      notify_espresso(integration_code, status: 'failure', error: 'Servidor indisponível após múltiplas tentativas', company_id: company_id)
+    end
+  end
+
+  def notify_espresso(integration_code, status:, company_id:, error: nil)
+    payload = {
+      codigo_cliente_integracao: integration_code,
+      status: status,
+      error: error,
+      company_id: company_id
+    }
+
+    Rails.logger.info("Notificando Espresso com: #{payload}")
+
     begin
-      response = HTTParty.post("https://webhook.espresso.com/notify", body: {
-        client_id: client_id,
-        message: message,
-        status: status
-      }.to_json, headers: { 'Content-Type' => 'application/json' })
-
-      Rails.logger.info("Notification sent to Espresso: #{response.body}") if response.success?
+      response = HTTParty.post('https://eo2180vhu0thrzi.m.pipedream.net/', {
+        body: payload.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      })
+      Rails.logger.info("Notificação enviada com sucesso para o Espresso: #{response.code} - #{response.body}")
     rescue StandardError => e
-      Rails.logger.error("Failed to notify Espresso: #{e.message}")
-    end
-  end
-end
-
-class ClientValidationService
-  def self.validate_keys(app_key, app_secret)
-    response = HTTParty.post("https://app.omie.com.br/api/v1/geral/clientescaract/", 
-                              body: { app_key: app_key, app_secret: app_secret }.to_json,
-                              headers: { 'Content-Type' => 'application/json' })
-  
-    if response.success?
-      { success: true, message: 'Credenciais válidas.' }
-    else
-      { success: false, message: response.parsed_response['error'] }
+      Rails.logger.error("Erro ao notificar o Espresso: #{e.message}")
     end
   end
 end

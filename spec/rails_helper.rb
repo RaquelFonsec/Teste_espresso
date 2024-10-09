@@ -1,15 +1,27 @@
+# spec/rails_helper.rb
+require 'sidekiq/testing'
+Sidekiq::Testing.fake! # Isso faz com que os jobs sejam enfileirados em vez de executados imediatamente
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rspec/rails'
 require 'database_cleaner'
+require 'active_job/test_helper'
+RSpec.configure do |config|
+  config.include ActiveJob::TestHelper
+end
+
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
+
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require 'rspec/rails'
+require 'active_job/test_helper'
+Rails.logger = ActiveSupport::Logger.new(STDOUT)
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -34,12 +46,20 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
   end
 
   config.before(:each) do
@@ -50,27 +70,26 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
-   
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
   # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
+  # based on their file location, for example enabling you to call `get` e
+  # `post` em specs sob `spec/controllers`.
   #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
+  # Você pode desabilitar esse comportamento removendo a linha abaixo, e em vez disso
+  # etiquetando explicitamente suas specs com seu tipo, por exemplo:
   #
   #     RSpec.describe UsersController, type: :controller do
   #       # ...
   #     end
   #
-  # The different available types are documented in the features, such as in
+  # Os diferentes tipos disponíveis estão documentados nas features, como em
   # https://rspec.info/features/7-0/rspec-rails
   config.infer_spec_type_from_file_location!
 

@@ -1,4 +1,4 @@
-require "active_support/core_ext/integer/time"
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -19,10 +19,10 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
+  if Rails.root.join('tmp/caching-dev.txt').exist?
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=#{2.days.to_i}"
+      'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -34,9 +34,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.active_job.queue_adapter = :sidekiq
   config.action_mailer.perform_caching = false
-  # Permitir o host do Ngrok
-  config.hosts << "0a12-2a02-a474-b1c4-1-c97d-bd11-cecd-4945.ngrok-free.app"
-  
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -55,7 +53,7 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
-
+  config.hosts << 'bd28-2a02-a474-b1c4-1-fc51-40ab-e58d-aaa1.ngrok-free.app'
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 

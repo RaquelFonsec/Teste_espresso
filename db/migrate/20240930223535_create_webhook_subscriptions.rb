@@ -3,8 +3,8 @@ class CreateWebhookSubscriptions < ActiveRecord::Migration[7.1]
     create_table :webhook_subscriptions do |t|
       t.references :client, null: false, foreign_key: true
       t.references :webhook_endpoint, null: false, foreign_key: true
-      t.string :event_type  # Altere de `event` para `event_type` se preferir
-      t.string :status
+      t.string :event, null: false
+      t.string :status, default: 'active'
 
       t.timestamps
     end
