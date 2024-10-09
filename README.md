@@ -215,8 +215,6 @@ Comando de Execução
 
 ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138") (exemplo via rails c)
 
-bundle exec rails runner -e development 'ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138")' ou via terminal
-
 
 1: ID do cliente que você deseja validar.
 "omie": Nome da aplicação que está realizando a validação.
@@ -339,9 +337,10 @@ Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, c
 
 
 
-Para executar o job, você pode utilizar o seguinte comando no console do Rails:MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
+Para executar o job, você pode utilizar o seguinte comando no console do Rails:
 
-rails runner:bundle exec rails runner -e development 'MarkAsPaidJob.perform_later(ID)'
+MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
+
 
 O job MarkAsPaidJob é responsável por processar a baixa de uma conta a pagar, marcando-a como paga e enviando uma notificação sobre essa alteração. O fluxo é composto pelas seguintes etapas:
 
