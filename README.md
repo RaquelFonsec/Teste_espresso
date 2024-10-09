@@ -270,10 +270,26 @@ O fluxo de criação de contas a pagar tem como objetivo registrar os reembolsos
 Execução do Comando
 
 Para iniciar a criação de uma conta a pagar, utilize o seguinte comando:
-  
 
 
-bundle exec rails runner -e development "CreatePayableAccountJob.perform_later(client_params: { client_id: "xxx", erp_key: "xxxxx", erp_secret: "xxxxx", category_code: "2.01.04", account_code: "xxxxx", due_date: "2024-10-12", cost: xxx, codigo_lancamento_integracao: "xxxx", client_code: "xxxx", categoria: "D" })"
+
+Rails c
+
+
+ :CreatePayableAccountJob.perform_later(client_params: {
+  client_id: xxxx,
+  erp_key: "xxxx",
+  erp_secret: "xxxxx",
+  category_code: "2.01.04",
+  account_code: xxxxxx,
+  due_date: "xxxxx",
+  cost: xxxxxx,
+  codigo_lancamento_integracao: "xxxxx",
+  client_code: "xxxxxxx",
+  categoria: "D"
+})
+
+
 
 
 
