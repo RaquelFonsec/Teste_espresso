@@ -187,11 +187,14 @@ Requisição:
 
 { "codigo_lancamento_integracao": "", "codigo_cliente_fornecedor": "CODIGO", "data_vencimento": "YYYY-MM-DD", "valor_documento": "XXX", "codigo_categoria": "CODIGO_CATEGORIA", "data_previsao": "YYYY-MM-DD", "id_conta_corrente": "ID_CONTA_CORRENTE" }
 
+
 Instruções para Preencher os Campos
 
 Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher os campos com os valores obtidos nas etapas anteriores.
 
 Execução da Validação do Cliente Integrador
+
+
 
 Para executar a tarefa de validação do cliente integrador, essa tarefa é fundamental para assegurar que as informações do cliente estejam corretamente cadastradas e sincronizadas com a API do Omie.
 
@@ -200,6 +203,7 @@ Comando de Execução
 ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138") (exemplo via rails c)
 
 bundle exec rails runner -e development 'ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138")' ou via terminal
+
 
 1: ID do cliente que você deseja validar.
 "omie": Nome da aplicação que está realizando a validação.
@@ -235,7 +239,10 @@ Envia uma notificação ao endpoint designado (Espresso) com o status da valida�
 Registra no log o resultado da tentativa de notificação.
 
 
+
 Fluxo de Criação de Contas a Pagar
+
+
 
 O fluxo de criação de contas a pagar tem como objetivo registrar os reembolsos aprovados no sistema Espresso e criar as respectivas contas a pagar no ERP Omie. Esse processo é essencial para garantir que as transações financeiras sejam adequadamente registradas e que o fluxo de caixa da empresa seja mantido em ordem
 
@@ -243,6 +250,7 @@ Execução do Comando
 
 Para iniciar a criação de uma conta a pagar, utilize o seguinte comando:
   
+
 
 bundle exec rails runner -e development "CreatePayableAccountJob.perform_later(client_params: { client_id: "xxx", erp_key: "xxxxx", erp_secret: "xxxxx", category_code: "2.01.04", account_code: "xxxxx", due_date: "2024-10-12", cost: xxx, codigo_lancamento_integracao: "xxxx", client_code: "xxxx", categoria: "D" })"
 
@@ -286,7 +294,11 @@ Criação da Conta a Pagar: Se tudo estiver válido, tenta criar a conta a pagar
 Notificações: Envia notificações sobre o status da operação (sucesso ou falha) e registra os resultados no log.
 Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, com validação e tratamento de erros adequados.
 
+
+
 ##Fluxo de Baixa de Pagamento
+
+
 
 Para executar o job, você pode utilizar o seguinte comando no console do Rails:MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
 
