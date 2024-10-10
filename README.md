@@ -355,6 +355,11 @@ Envio de Notificação: Caso a notificação não seja pulada, o job cria um pay
 Atualização do Status: Se a notificação for enviada com sucesso, a conta a pagar é marcada como "paga". Se a notificação falhar, o job gerencia a falha, registrando tentativas e, se necessário, reprogramando uma nova tentativa de notificação.
 Tentativas de Notificação: O job permite até três tentativas de notificação. Se o limite for atingido, o status da conta a pagar é atualizado para "failed".
 
+## Documentação da API
+
+Para mais informações sobre como usar a API Omie, consulte a [Documentação da API Omie](https://app.swaggerhub.com/templates-docs/RAQUELETO/omie/1.0.0#/).
+
+
 
 Considerações Finais
 
