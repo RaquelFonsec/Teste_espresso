@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 
 # Integração de Reembolsos - Espresso e ERP Omie
