@@ -361,7 +361,3 @@ A integração entre o sistema de reembolsos Espresso e o ERP Omie foi projetada
 Com a automação desses processos, a comunicação entre os sistemas é simplificada, o que resulta em maior agilidade no processamento de reembolsos e no controle das transações. A utilização de tecnologias robustas como Ruby on Rails, Sidekiq e Redis, junto com a cobertura de testes com RSpec, garante que a aplicação seja confiável e possa escalar conforme a demanda.
 Este projeto serve como uma base sólida para futuras melhorias e ampliações na integração com outros sistemas, garantindo que o fluxo de caixa da empresa seja sempre preciso e eficiente
 
-<<<<<<< HEAD
-
-=======
->>>>>>> db55697 (Removido spec desnecessário do webhook)
