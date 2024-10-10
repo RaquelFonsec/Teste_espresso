@@ -20,8 +20,6 @@ gem 'bootsnap', require: false
 # Use Sidekiq for background jobs in production
 group :production do
   gem 'sidekiq'
-end
-group :production do
   gem 'rails_12factor'
 end
 
@@ -42,9 +40,8 @@ group :development, :test do
   gem 'retryable'
   gem 'shoulda-matchers'
   gem 'timecop'
-  # Ensure httparty is available in development, test, and production
-  gem 'httparty'
-
+  # httparty is now available in all environments
+  gem 'httparty' 
 end
 
 # Development-only gems
