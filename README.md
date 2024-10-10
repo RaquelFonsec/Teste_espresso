@@ -110,7 +110,8 @@ Cria o banco de dados
 rails db
 
 Executa as migrações para criar as tabelas no banco de dados
-rails db
+rails db:migrate
+
 
 Inicia o servidor Redis
 redis-server
