@@ -25,6 +25,7 @@ end
 
 # Development and test gems
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'database_cleaner'
   gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
   gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]
