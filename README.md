@@ -218,8 +218,8 @@ ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "1
 
 1: ID do cliente que você deseja validar.
 "omie": Nome da aplicação que está realizando a validação.
-ENV["APP_KEY"]: Chave da aplicação obtida das variáveis de ambiente, utilizada para autenticação na API do Omie.
-ENV["APP_SECRET"]: Segredo da aplicação, também obtido das variáveis de ambiente, para autenticação.
+ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie para criar a conta a pagar
+ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
 "138": Código do cliente integração que está sendo validado. (Exemplo)
 Uso do Webhook
 
