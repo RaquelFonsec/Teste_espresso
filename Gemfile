@@ -44,6 +44,7 @@ group :development, :test do
   gem 'timecop'
   # Ensure httparty is available in development, test, and production
   gem 'httparty'
+
 end
 
 # Development-only gems
