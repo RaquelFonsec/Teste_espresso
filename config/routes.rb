@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  root to: 'pages#home'
+  get 'webhooks/receive_webhook'
+  root to: 'home#index'
   get 'home/index', to: 'home#index'
   mount Sidekiq::Web => '/sidekiq'
 

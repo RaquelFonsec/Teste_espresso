@@ -77,7 +77,12 @@ class MarkAsPaidJob < ApplicationJob
                              body: payload.to_json,
                              headers: { 'Content-Type' => 'application/json' })
 
-    OpenStruct.new(success?: response.success?, response_body: response.body)
+    if response.code == 200
+      OpenStruct.new(success?: true, response_body: response.body)
+    else
+      Rails.logger.error("Erro ao enviar notificação: HTTP #{response.code}")
+      OpenStruct.new(success?: false, response_body: response.body)
+    end
   rescue StandardError => e
     Rails.logger.error("Erro ao enviar notificação: #{e.message}")
     OpenStruct.new(success?: false)
@@ -101,6 +106,6 @@ class MarkAsPaidJob < ApplicationJob
   end
 
   def payload_status(payable)
-    payable.paid? ? 'paid' : 'failed'
+    payable.status == 'paid' ? 'paid' : 'pending'
   end
 end

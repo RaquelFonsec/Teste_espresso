@@ -21,7 +21,7 @@ class NotificationService
 
     rescue StandardError => e
       Rails.logger.error("Erro ao tentar enviar notificação: #{e.message}")
-      Rails.logger.error("Falha ao enviar notificação: Internal Server Error") # Mensagem ajustada
+      Rails.logger.error("Falha ao enviar notificação: Internal Server Error") 
     end
   end
 
