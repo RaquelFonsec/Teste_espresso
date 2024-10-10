@@ -1,7 +1,6 @@
 class AddEnabledToWebhookEndpoints < ActiveRecord::Migration[7.1]
   def change
-    unless column_exists?(:webhook_endpoints, :enabled)
-      add_column :webhook_endpoints, :enabled, :boolean, default: true
-    end
+    add_column :webhook_endpoints, :enabled, :boolean, default: true
+    add_index :webhook_endpoints, :enabled # Adiciona um índice separado
   end
 end
