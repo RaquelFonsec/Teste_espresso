@@ -47,6 +47,7 @@ class ValidateClientJob < ApplicationJob
     end
   end
 
+  
   def notify_espresso(integration_code, status:, company_id:, error: nil)
     payload = {
       codigo_cliente_integracao: integration_code,
@@ -54,17 +55,25 @@ class ValidateClientJob < ApplicationJob
       error: error,
       company_id: company_id
     }
-
+  
     Rails.logger.info("Notificando Espresso com: #{payload}")
-
+  
     begin
       response = HTTParty.post('https://eo2180vhu0thrzi.m.pipedream.net/', {
         body: payload.to_json,
         headers: { 'Content-Type' => 'application/json' }
       })
-      Rails.logger.info("Notificação enviada com sucesso para o Espresso: #{response.code} - #{response.body}")
+  
+      if response.code == 200
+        Rails.logger.info("Notificação enviada com sucesso para o Espresso: #{response.code} - #{response.body}")
+      else
+        # Logar mais informações detalhadas quando ocorrer erro
+        Rails.logger.error("Erro ao notificar o Espresso: #{response.code} - #{response.body}")
+        Rails.logger.error("Corpo da resposta: #{response.body}")
+      end
+  
     rescue StandardError => e
       Rails.logger.error("Erro ao notificar o Espresso: #{e.message}")
     end
   end
-end
+end   
