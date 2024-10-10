@@ -21,6 +21,9 @@ gem 'bootsnap', require: false
 group :production do
   gem 'sidekiq'
 end
+group :production do
+  gem 'rails_12factor'
+end
 
 # Development and test gems
 group :development, :test do
