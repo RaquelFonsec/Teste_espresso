@@ -4,4 +4,3 @@ class AddResponseToWebhookEvents < ActiveRecord::Migration[7.1]
       add_column :webhook_events, :response, :jsonb, default: {}
     end
   end
-end
