@@ -276,8 +276,8 @@ Rails c
 
  :CreatePayableAccountJob.perform_later(client_params: {
   client_id: xxxx,
-  erp_key: "xxxx",
-  erp_secret: "xxxxx",
+  erp_key: ENV['ERP_KEY'],                        # Chave do ERP (obtida da variável de ambiente)
+  erp_secret: ENV['ERP_SECRET'],                  # Segredo do ERP (obtida da variável de ambiente)
   category_code: "2.01.04",
   account_code: xxxxxx,
   due_date: "xxxxx",
