@@ -356,11 +356,6 @@ Atualização do Status: Se a notificação for enviada com sucesso, a conta a p
 Tentativas de Notificação: O job permite até três tentativas de notificação. Se o limite for atingido, o status da conta a pagar é atualizado para "failed".
 
 
-## Documentação da API
-
-Para mais informações sobre como usar a API Omie, consulte a [Documentação da API Omie] (https://app.swaggerhub.com/templates-docs/Raquel22/omie/1.0.0).
-
-
 
 Considerações Finais
 
