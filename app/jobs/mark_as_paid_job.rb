@@ -24,13 +24,20 @@ class MarkAsPaidJob < ApplicationJob
   end
 
   def skip_notification?(payable)
-    if payable.reimbursement_existe?
-      Rails.logger.info("Reembolso já registrado para a conta a pagar #{payable.id}. Notificação não necessária.")
+    if payable.reimbursement_existe? && payable.reimbursement_pago?
+      Rails.logger.info("Reembolso já registrado e pago para a conta a pagar #{payable.id}. Notificação não necessária.")
       true
     else
       false
     end
   end
+  
+  def payload_status(payable)
+    return 'paid' if payable.status == 'paid'
+    'pending'
+  end
+  
+  
 
   def handle_notification(payable)
     response = send_notification(payable)
@@ -73,7 +80,7 @@ class MarkAsPaidJob < ApplicationJob
   end
 
   def send_request(payload)
-    response = HTTParty.post('https://eo2180vhu0thrzi.m.pipedream.net/',
+    response = HTTParty.post('https://eoz2bsfgfb26coz.m.pipedream.net',
                              body: payload.to_json,
                              headers: { 'Content-Type' => 'application/json' })
 

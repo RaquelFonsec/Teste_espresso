@@ -42,13 +42,14 @@ RSpec.describe MarkAsPaidJob, type: :job do
   end
 
   def setup_webhook_failure
-    stub_request(:post, 'https://eo2180vhu0thrzi.m.pipedream.net/')
+    stub_request(:post, 'https://eoz2bsfgfb26coz.m.pipedream.net/')
       .to_return(
         status: 500,
         body: { error: 'Internal Server Error' }.to_json,
         headers: { 'Content-Type' => 'application/json' }
       )
   end
+  
 
   def setup_limit_reached
     payable.update(notification_attempts: 2)
