@@ -358,7 +358,7 @@ Tentativas de Notificação: O job permite até três tentativas de notificaçã
 
 ## Documentação da API
 
-Para mais informações sobre como usar a API Omie, consulte a [Documentação da API Omie] (https://app.swaggerhub.com/templates-docs/RAQUELETO/omie/1.0.0#/).
+Para mais informações sobre como usar a API Omie, consulte a [Documentação da API Omie] (https://app.swaggerhub.com/templates-docs/Raquel22/omie/1.0.0).
 
 
 
