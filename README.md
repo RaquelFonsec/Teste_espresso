@@ -276,8 +276,8 @@ Rails c
 
  :CreatePayableAccountJob.perform_later(client_params: {
   client_id: xxxx,
-  erp_key: ENV['ERP_KEY'],                        # Chave do ERP (obtida da variável de ambiente)
-  erp_secret: ENV['ERP_SECRET'],                  # Segredo do ERP (obtida da variável de ambiente)
+  erp_key: ENV['ERP_KEY'],                        
+  erp_secret: ENV['ERP_SECRET'],                 
   category_code: "2.01.04",
   account_code: xxxxxx,
   due_date: "xxxxx",
@@ -293,9 +293,9 @@ Rails c
 
 client_id:Identificador único do cliente no sistema, utilizado para associar as contas a pagar ao cliente correto obtido nos fluxos anteriores
 
-erp_key:Chave de autenticação da aplicação, que permite que o sistema se conecte ao ERP Omie para criar a conta a pagar.
+erp_key:Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie para criar a conta a pagar
 
-erp_secret:Segredo da aplicação, utilizado em conjunto com a chave (erp_key) para autenticação no ERP Omie
+erp_secret:Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
 
 category_code: "2.01.04" Código da categoria que classifica a conta a pagar.
 
