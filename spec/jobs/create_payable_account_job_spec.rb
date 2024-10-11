@@ -11,7 +11,7 @@ RSpec.describe CreatePayableAccountJob, type: :job do
   let(:erp_secret) { company.erp_secret } # Usando o segredo da empresa criada
   let(:category_code) { 'category_1' }
   let(:account_code) { 'account_1' }
-  let(:due_date) { Date.tomorrow.to_s } # Certifique-se de que é uma string
+  let(:due_date) { Date.tomorrow.to_s } 
   let(:cost) { 100.0 }
   let(:codigo_lancamento_integracao) { 'integration_code' }
   let(:client_code) { 'client_code' }

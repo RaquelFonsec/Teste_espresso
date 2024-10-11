@@ -1,19 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Webhooks::WebhookEndpointsController, type: :controller do
-  # Criação da empresa com todos os atributos necessários
   let(:company) { Company.create!(name: 'Example Company', erp_key: 'ERP_KEY', erp_secret: 'ERP_SECRET') }
-
-  # Criação do cliente com todos os atributos necessários
   let(:client) { Client.create!(client_code: 'C123', erp_key: 'ERP_KEY', erp_secret: 'ERP_SECRET', company: company) }
 
   let(:valid_attributes) do
     {
       url: 'https://example.com/webhook',
       event_type: 'create_payable',
-      client_id: client.id,        
-      company_id: company.id,       
-      subscriptions: ['all'], 
+      client_id: client.id,
+      company_id: company.id,
+      subscriptions: ['all'],
       enabled: true,
       erp: 'omnie'
     }
@@ -26,6 +23,7 @@ RSpec.describe Webhooks::WebhookEndpointsController, type: :controller do
       client_id: nil,
       company_id: nil,
       subscriptions: nil,
+      enabled: nil,
       erp: nil
     }
   end
@@ -67,4 +65,3 @@ RSpec.describe Webhooks::WebhookEndpointsController, type: :controller do
     end
   end
 end
-
