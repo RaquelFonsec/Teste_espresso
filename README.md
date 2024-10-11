@@ -276,22 +276,6 @@ Processamento de Eventos: O controlador processa os eventos, valida os dados e a
 Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
 (https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
 
-Job CreatePayableAccountJob
-O job CreatePayableAccountJob é responsável pela lógica de criação das contas a pagar no sistema. Ele segue um fluxo bem definido para garantir que todas as operações sejam realizadas de maneira eficiente e segura:
-
-Recebimento dos Parâmetros: O job recebe dados como ID do cliente, chaves de autenticação, categoria, código da conta, data de vencimento e valor.
-
-Validação da Data de Vencimento: Converte a data de vencimento em um objeto de data e verifica se é válida.
-
-Verificação de Disponibilidade do Servidor: Confirma se a API do Omie está acessível; se não, tenta novamente até 3 vezes.
-
-Validação dos Parâmetros: Utiliza um validador para garantir que todos os dados estão corretos; se houver erros, notifica a falha.
-
-Criação da Conta a Pagar: Se todos os dados forem válidos, o job tenta criar a conta a pagar e a salva no banco de dados.
-
-Notificações: Envia notificações sobre o status da operação (sucesso ou falha) e registra os resultados no log.
-
-Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, com validação e tratamento de erros adequados.
 
 Testando a Implementação
 Para testar a implementação do webhook, você pode usar o seguinte comando curl para simular a recepção de um evento de criação de conta a pagar:
@@ -317,6 +301,28 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
     }
   }
 }'
+
+
+
+
+Job CreatePayableAccountJob
+O job CreatePayableAccountJob é responsável pela lógica de criação das contas a pagar no sistema. Ele segue um fluxo bem definido para garantir que todas as operações sejam realizadas de maneira eficiente e segura:
+
+Recebimento dos Parâmetros: O job recebe dados como ID do cliente, chaves de autenticação, categoria, código da conta, data de vencimento e valor.
+
+Validação da Data de Vencimento: Converte a data de vencimento em um objeto de data e verifica se é válida.
+
+Verificação de Disponibilidade do Servidor: Confirma se a API do Omie está acessível; se não, tenta novamente até 3 vezes.
+
+Validação dos Parâmetros: Utiliza um validador para garantir que todos os dados estão corretos; se houver erros, notifica a falha.
+
+Criação da Conta a Pagar: Se todos os dados forem válidos, o job tenta criar a conta a pagar e a salva no banco de dados.
+
+Notificações: Envia notificações sobre o status da operação (sucesso ou falha) e registra os resultados no log.
+
+Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, com validação e tratamento de erros adequados.
+
+
 
 pelo rails c
 
