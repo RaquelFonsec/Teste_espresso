@@ -18,14 +18,14 @@ RSpec.describe ValidateClientJob, type: :job do
     context "with valid credentials" do
       before do
         allow_any_instance_of(ValidateClientJob).to receive(:validate_credentials).and_return(double(success?: true))
-        stub_request(:post, "https://eo2180vhu0thrzi.m.pipedream.net/")
+        stub_request(:post, "https://eorwcvkk5u25m7w.m.pipedream.net/")
           .to_return(status: 200)
       end
 
       it "notifies success" do
         ValidateClientJob.perform_now(company_id, erp, erp_key, erp_secret, integration_code)
 
-        expect(a_request(:post, "https://eo2180vhu0thrzi.m.pipedream.net/")
+        expect(a_request(:post, "https://eorwcvkk5u25m7w.m.pipedream.net/")
           .with(body: { codigo_cliente_integracao: integration_code, status: 'success', error: nil, company_id: company_id }.to_json)).to have_been_made.once
       end
     end
@@ -55,14 +55,14 @@ RSpec.describe ValidateClientJob, type: :job do
     context "when an exception occurs" do
       before do
         allow_any_instance_of(ValidateClientJob).to receive(:validate_credentials).and_raise(StandardError.new("Erro de conexão"))
-        stub_request(:post, "https://eo2180vhu0thrzi.m.pipedream.net/")
+        stub_request(:post, "https://eorwcvkk5u25m7w.m.pipedream.net/")
           .to_return(status: 200)
       end
 
       it "notifies failure" do
         ValidateClientJob.perform_now(company_id, erp, erp_key, erp_secret, integration_code)
 
-        expect(a_request(:post, "https://eo2180vhu0thrzi.m.pipedream.net/")
+        expect(a_request(:post, "https://eorwcvkk5u25m7w.m.pipedream.net/")
           .with(body: { codigo_cliente_integracao: integration_code, status: 'failure', error: 'Erro de conexão', company_id: company_id }.to_json)).to have_been_made.once
       end
     end

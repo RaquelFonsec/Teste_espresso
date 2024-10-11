@@ -80,7 +80,7 @@ class MarkAsPaidJob < ApplicationJob
   end
 
   def send_request(payload)
-    response = HTTParty.post('https://eoz2bsfgfb26coz.m.pipedream.net',
+    response = HTTParty.post('https://eorwcvkk5u25m7w.m.pipedream.net/',
                              body: payload.to_json,
                              headers: { 'Content-Type' => 'application/json' })
 

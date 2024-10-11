@@ -24,11 +24,11 @@ RSpec.describe CreatePayableAccountJob, type: :job do
       .to_return(status: 200, body: { message: 'Conta a pagar criada com sucesso.', payable_id: 1 }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     # Stub para a notificação de sucesso
-    stub_request(:post, 'https://eo2180vhu0thrzi.m.pipedream.net/')
+    stub_request(:post, 'https://eorwcvkk5u25m7w.m.pipedream.net/')
       .to_return(status: 200)
 
     # Stub para a notificação de falha
-    stub_request(:post, 'https://eo2180vhu0thrzi.m.pipedream.net/')
+    stub_request(:post, 'https://eorwcvkk5u25m7w.m.pipedream.net/')
       .to_return(status: 200, body: { message: 'Notificação recebida com falha' }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 
@@ -51,7 +51,7 @@ RSpec.describe CreatePayableAccountJob, type: :job do
     end.to change(Payable, :count).by(1)
 
     # Verifica se a notificação de sucesso foi enviada
-    expect(WebMock).to have_requested(:post, 'https://eo2180vhu0thrzi.m.pipedream.net/').once
+    expect(WebMock).to have_requested(:post, 'https://eorwcvkk5u25m7w.m.pipedream.net/').once
   end
 
   it 'notifica falha quando o servidor não está disponível' do
@@ -76,7 +76,7 @@ RSpec.describe CreatePayableAccountJob, type: :job do
     end.not_to change(Payable, :count)
 
     # Verifica se a notificação de falha foi enviada
-    expect(WebMock).to have_requested(:post, 'https://eo2180vhu0thrzi.m.pipedream.net/').once
+    expect(WebMock).to have_requested(:post, 'https://eorwcvkk5u25m7w.m.pipedream.net/').once
   end
 end
 

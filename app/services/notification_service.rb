@@ -5,7 +5,7 @@ class NotificationService
           when :omie
             'https://app.omie.com.br/api/v1/financas/contapagar'
           when :pipedream
-            'https://eo2180vhu0thrzi.m.pipedream.net/'
+            'https://eorwcvkk5u25m7w.m.pipedream.net/'
           else
             raise ArgumentError, "Alvo não reconhecido: #{target}"
           end
