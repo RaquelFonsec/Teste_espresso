@@ -1,4 +1,4 @@
-# app/services/payable_account_validator.rb
+
 class PayableAccountValidator
   REQUIRED_FIELDS = {
     client_id: 'não pode ser nulo',
