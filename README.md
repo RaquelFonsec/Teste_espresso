@@ -263,7 +263,9 @@ Registra no log o resultado da tentativa de notificação.
 Fluxo de Criação de Contas a Pagar
 
 Implementação do Controlador de Webhooks
+
 Descrição
+
 O controlador WebhooksController foi adicionado ao sistema para permitir a recepção e o processamento de eventos de webhook, especificamente para a criação de contas a pagar. Este fluxo é crucial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as respectivas contas a pagar sejam criadas no ERP Omie.
 
 Funcionalidades
@@ -337,9 +339,6 @@ Fluxo de Baixa de Pagamento
 
 O fluxo de baixa de pagamento é responsável por marcar uma conta a pagar como paga, registrando essa transação no sistema e enviando uma notificação apropriada. Isso garante que os pagamentos sejam atualizados corretamente, facilitando a gestão financeira da empresa.
 
-Para executar o job, você pode utilizar o seguinte comando no console do Rails:
-
-MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
 
 
 Testando o Webhook
@@ -358,6 +357,54 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 
+
+Descrição do Job MarkAsPaidJob
+O job MarkAsPaidJob é responsável por marcar uma conta a pagar como paga no sistema e enviar uma notificação sobre essa alteração para um endpoint externo. Esse processo é crucial para garantir que as transações financeiras sejam registradas corretamente, permitindo uma gestão eficaz do fluxo de caixa.
+
+Funcionamento do Job
+
+Execução do Job:
+
+O job é chamado com um payable_id, que é o identificador da conta a pagar que deve ser marcada como paga.
+Busca da Conta a Pagar:
+
+
+O método perform começa buscando a conta a pagar no banco de dados usando o payable_id fornecido através do método find_payable. Se a conta não for encontrada, o job é encerrado imediatamente.
+Verificação de Notificação:
+
+
+Antes de prosseguir, o job verifica se a notificação deve ser enviada usando o método skip_notification?. Se a conta já tiver um reembolso registrado e pago, a notificação é pulada e um log é gerado informando que não é necessário enviar uma nova notificação.
+Envio da Notificação:
+
+
+Se a notificação não for pulada, o job chama o método handle_notification, que é responsável por enviar a notificação para o endpoint configurado. O payload da notificação é construído com informações relevantes sobre a conta a pagar.
+Atualização do Status da Conta a Pagar:
+
+
+Após enviar a notificação, o job atualiza o status da conta a pagar com base na resposta recebida do endpoint. Se a notificação for bem-sucedida (status 200), a conta é marcada como "paga". Caso contrário, o job lida com a falha de notificação.
+Gerenciamento de Falhas:
+
+
+Se ocorrer uma falha ao enviar a notificação, o job incrementa o contador de tentativas de notificação. Se o número de tentativas ultrapassar 3, a conta a pagar é marcada como "failed". Caso contrário, o job reprograma a notificação para tentar novamente após 10 minutos.
+Construção do Payload:
+
+
+O payload da notificação é construído a partir de dados essenciais da conta a pagar, como código da conta, código da categoria, código do cliente, custo e data de vencimento. O status da conta também é incluído no payload.
+Envio da Requisição:
+
+
+O job utiliza a biblioteca HTTParty para enviar uma requisição HTTP POST para o endpoint especificado, contendo o payload em formato JSON. O tratamento de erros é implementado para lidar com possíveis exceções durante o envio.
+Logs e Registro
+O job gera logs informativos e de erro em diversas etapas, permitindo que os desenvolvedores e administradores do sistema acompanhem o fluxo de execução e identifiquem problemas rapidamente.
+
+
+Conclusão
+
+O job MarkAsPaidJob assegura que o processo de marcação de contas a pagar como pagas seja realizado de forma robusta, com validações adequadas e manejo de erros. Essa funcionalidade é essencial para a manutenção da integridade dos registros financeiros da empresa e para a comunicação eficaz com sistemas externos.
+
+Para executar o job, você pode utilizar o seguinte comando no console do Rails:
+
+MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
 
 
 Considerações Finais
