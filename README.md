@@ -385,7 +385,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
   }                      
 }'
 
-{"message":"Conta a pagar em processo de criação"}
+{"message":"Notificação para marcar como pago em processo"}
 
 
 Notificações: Após a execução, as notificações sobre o status da operação são enviadas para o serviço de notificação, 
