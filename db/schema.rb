@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_11_132646) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_11_151638) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -102,6 +102,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_132646) do
     t.string "erp_key"
     t.string "erp_secret"
     t.integer "payment_id"
+    t.integer "company_id"
   end
 
   create_table "payment_failures", force: :cascade do |t|

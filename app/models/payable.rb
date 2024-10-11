@@ -8,7 +8,7 @@ class Payable < ApplicationRecord
   validates :account_code, presence: true
   validates :categoria, presence: true
   validates :codigo_lancamento_integracao, presence: true
-
+  validates :company_id, presence: true
   validate :due_date_cannot_be_in_the_past
 
   after_initialize :set_default_status, if: :new_record?
