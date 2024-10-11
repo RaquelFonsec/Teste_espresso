@@ -39,7 +39,7 @@ group :development, :test do
   gem 'http'
   gem 'rest-client'
   gem 'retryable'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 5.0'
   gem 'timecop'
   # httparty is now available in all environments
   gem 'httparty' 

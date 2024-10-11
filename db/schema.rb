@@ -98,7 +98,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_09_125209) do
     t.string "status_code"
     t.string "description"
     t.string "codigo_lancamento_integracao"
-    t.integer "notification_attempts"
+    t.integer "notification_attempts", default: 0
     t.string "erp_key"
     t.string "erp_secret"
   end

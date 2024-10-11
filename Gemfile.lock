@@ -290,7 +290,7 @@ GEM
     rubocop-ast (1.32.3)
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
-    shoulda-matchers (6.4.0)
+    shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
     sidekiq (7.3.2)
       concurrent-ruby (< 2)
@@ -341,7 +341,7 @@ DEPENDENCIES
   retryable
   rspec-rails
   rubocop
-  shoulda-matchers
+  shoulda-matchers (~> 5.0)
   sidekiq
   spring
   timecop
