@@ -324,7 +324,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 {"message":"Notificação para marcar como pago em processo"}
 
 Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
-(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream e, em seguida, notificadas à Omie.
 
 
 
@@ -389,7 +389,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 Notificações: Após a execução, as notificações sobre o status da operação são enviadas para o serviço de notificação, 
-(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.e, em seguida, notificadas à Omie.
 
 Descrição do Job MarkAsPaidJob
 O job MarkAsPaidJob é responsável por marcar uma conta a pagar como paga no sistema e enviar uma notificação sobre essa alteração para um endpoint externo. Esse processo é crucial para garantir que as transações financeiras sejam registradas corretamente, permitindo uma gestão eficaz do fluxo de caixa.
