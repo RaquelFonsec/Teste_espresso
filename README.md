@@ -363,7 +363,7 @@ Se a notificação for enviada com sucesso, a função update_payable_status mar
 6. Tentativas de Notificação:
 A função handle_notification_failure gerencia as falhas de notificação. Se o número de tentativas exceder 3, a conta é marcada como "failed". Caso contrário, o job será reprogramado para tentar enviar a notificação novamente após 10 minutos.
 
-
+  Para maiores esclarecimentos, consulte a documentação da API          https://app.swaggerhub.com/templates-docs/Raquel22/omie/1.0.0
 
 
 Considerações Finais
