@@ -9,8 +9,7 @@ class Reimbursement < ApplicationRecord
   validates :due_date, presence: true
   validates :payment_method, presence: true
   validates :cost, presence: true, numericality: true
-  validates :status,
-            inclusion: { in: %w[pago pendente cancelado aprovado], message: '%<value>s não é um status válido' }
+  validates :status, inclusion: { in: %w[pago pendente cancelado aprovado] }
 
   def register_payment!
     update(status: 'pago')

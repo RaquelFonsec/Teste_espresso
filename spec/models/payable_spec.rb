@@ -19,9 +19,9 @@ RSpec.describe Payable, type: :model do
   describe '#reimbursement_existe?' do
     it 'retorna true se o reembolso existir' do
       client = create(:client) # Criar um cliente
-      payable = create(:payable, client_id: client.id) # Atribuindo apenas o client
+      payable = create(:payable, client_id: client.id) 
 
-      create(:reimbursement, payable: payable, client: client) # Usar a fábrica corretamente
+      create(:reimbursement, payable: payable, client: client) 
       expect(payable.reimbursement_existe?).to be true
     end
 
