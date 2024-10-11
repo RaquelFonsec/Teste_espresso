@@ -345,18 +345,24 @@ MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi cri
 
 O job MarkAsPaidJob é responsável por processar a baixa de uma conta a pagar, marcando-a como paga e enviando uma notificação sobre essa alteração. O fluxo é composto pelas seguintes etapas:
 
-Recebimento do ID da Conta a Pagar: O job é chamado com um payable_id, que representa a conta a pagar que será processada.
+1. Recebimento do ID da Conta a Pagar:
+O job começa recebendo um payable_id como parâmetro. Esse ID refere-se à conta a pagar que será processada. No console do Rails, você pode executar o comando MarkAsPaidJob.perform_later(ID), substituindo o ID pelo valor correto da conta a pagar.
 
-Localização da Conta a Pagar: O job busca a conta a pagar correspondente no banco de dados utilizando o ID fornecido. Se a conta não for encontrada, o processo é interrompido e um log de erro é registrado.
+2. Localização da Conta a Pagar:
+A função find_payable busca a conta no banco de dados utilizando o ID fornecido. Se a conta não for encontrada, o processo é interrompido e uma mensagem de erro é registrada nos logs, indicando que o ID não foi localizado. Caso a conta seja encontrada, o fluxo continua.
 
-Verificação de Notificação: O job verifica se a conta a pagar já tem um reembolso registrado. Se um reembolso existir, a notificação é pulada, e um log é gerado.
-Envio de Notificação: Caso a notificação não seja pulada, o job cria um payload contendo as informações da conta a pagar e tenta enviar uma notificação para o endpoint específico.
+3. Verificação de Notificação:
+O job usa a função skip_notification? para verificar se já existe um reembolso registrado e pago para a conta. Se houver um reembolso e ele já foi pago, o job evita enviar uma nova notificação, e um log é gerado informando que a notificação foi pulada.
 
-Atualização do Status: Se a notificação for enviada com sucesso, a conta a pagar é marcada como "paga". Se a notificação falhar, o job gerencia a falha, registrando tentativas e, se necessário, reprogramando uma nova tentativa de notificação.
-Tentativas de Notificação: O job permite até três tentativas de notificação. Se o limite for atingido, o status da conta a pagar é atualizado para "failed".
+4. Criação e Envio de Notificação:
+Caso a notificação não seja pulada, o job constrói um payload (dados como código da conta, valor, data de vencimento, etc.) através das funções build_payload e base_payload. Esse payload contém todas as informações necessárias sobre a conta e é enviado para um endpoint via uma requisição HTTP (HTTParty.post). Se a resposta for bem-sucedida (status 200), o processo segue para o próximo passo.
 
-Detalhamento da URL 
-URL do Webhook: A URL https://eoz2bsfgfb26coz.m.pipedream.net é o endpoint para onde a notificação é enviada. Essa URL foi configurada para receber os dados no formato JSON.
+5. Atualização do Status da Conta:
+Se a notificação for enviada com sucesso, a função update_payable_status marca a conta a pagar como "paga" (paid). Caso contrário, o job lida com a falha, incrementando o contador de tentativas de notificação e programando uma nova tentativa, se necessário.
+
+6. Tentativas de Notificação:
+A função handle_notification_failure gerencia as falhas de notificação. Se o número de tentativas exceder 3, a conta é marcada como "failed". Caso contrário, o job será reprogramado para tentar enviar a notificação novamente após 10 minutos.
+
 
 
 
