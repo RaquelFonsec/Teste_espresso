@@ -133,7 +133,7 @@ Como se Cadastrar na Omie e Obter Credenciais
 1. Criando uma Conta de Teste na Omie
 Para criar uma conta de teste na Omie, siga estes passos:
 
-Acesse o Site da Omie:
+Acesse o Site da Omie:https://developer.omie.com.br/
 
 Vá para Omie.
 Inscreva-se:
