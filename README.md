@@ -326,7 +326,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
 (https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream e, em seguida, notificadas à Omie.
 
-
+Criação de Conta a Pagar : Quando o evento é "create_payable", o webhook extrai os dados fornecidos e envia esses dados para Job CreatePayableAccountJob  que cria a conta a pagar
 
 
 Job CreatePayableAccountJob
@@ -390,6 +390,8 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 Notificações: Após a execução, as notificações sobre o status da operação são enviadas para o serviço de notificação, 
 (https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.e, em seguida, notificadas à Omie.
+
+Marcar como Paga : Se o evento for "mark_as_paid", o webhook envia o ID da conta a pagar para o Job MarkAsPaidJob. Esse trabalho busca a conta associada ao ID e tenta notificá-la. Dependendo da resposta da notificação, o trabalho pode marcar a conta como pagamento ou agendar novos testes em caso de falha. Se o processo for bem-sucedido, a conta será atualizada para "pagamento", mas, caso ocorram falhas repetidas, ela pode ser marcada como "failed"
 
 Descrição do Job MarkAsPaidJob
 O job MarkAsPaidJob é responsável por marcar uma conta a pagar como paga no sistema e enviar uma notificação sobre essa alteração para um endpoint externo. Esse processo é crucial para garantir que as transações financeiras sejam registradas corretamente, permitindo uma gestão eficaz do fluxo de caixa.
