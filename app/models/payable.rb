@@ -1,5 +1,5 @@
 class Payable < ApplicationRecord
-  has_one :reimbursement # Correto aqui
+  has_one :reimbursement 
   validates :client_id, presence: true
   validates :client_code, presence: true
   validates :cost, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -17,7 +17,7 @@ class Payable < ApplicationRecord
     reimbursement.present?
   end
 
-  def record_failed_notification # Definindo aqui
+  def record_failed_notification 
     update(status: 'failed')
     Rails.logger.error("Falha ao notificar a conta a pagar #{id}.")
   end
