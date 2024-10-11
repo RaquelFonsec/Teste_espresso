@@ -63,5 +63,5 @@ class Webhooks::WebhookEndpointsController < ApplicationController
 def webhook_endpoint_params
   params.require(:webhook_endpoint).permit(:url, :event_type, :client_id, :company_id, :subscriptions, :enabled, :erp)
 end
-  end
+end
   

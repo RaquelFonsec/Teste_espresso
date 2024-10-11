@@ -9,6 +9,7 @@ class WebhookEndpoint < ApplicationRecord
   validates :company_id, presence: true
   validates :subscriptions, presence: true, length: { minimum: 1 }
   validates :url, presence: true
+  validates :event_type, presence: true
   validates :erp, presence: true
   validates :client_id, presence: true
   scope :enabled, -> { where(enabled: true) }

@@ -1,5 +1,6 @@
 class Payable < ApplicationRecord
   has_one :reimbursement 
+  belongs_to :company
   validates :client_id, presence: true
   validates :client_code, presence: true
   validates :cost, presence: true, numericality: { greater_than_or_equal_to: 0 }

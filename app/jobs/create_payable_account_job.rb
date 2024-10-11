@@ -60,11 +60,12 @@ class CreatePayableAccountJob < ApplicationJob
     # Tenta salvar a conta a pagar no banco de dados
     if payable.save
       Rails.logger.info("Conta a pagar criada com sucesso. ID: #{payable.id}")
-      notify_success(message: 'Conta a pagar criada com sucesso.', payable_id: payable.id) # Notifica sucesso
+      notify_success(message: 'Conta a pagar criada com sucesso.', payable_id: payable.id)
     else
-      handle_creation_failure(payable) # Lida com a falha na criação
+      Rails.logger.error("Falha ao criar Payable: #{payable.errors.full_messages.join(', ')}")
+      notify_failure(payable.errors.full_messages.join(', '))
     end
-  end
+  end     
 
   # Lida com falhas ao criar a conta a pagar
   def handle_creation_failure(payable)
