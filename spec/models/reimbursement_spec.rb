@@ -16,7 +16,7 @@ RSpec.describe Reimbursement, type: :model do
       due_date: Date.today,
       payment_method: 'cartão',
       cost: 50,
-      status: 'pendente' # Você pode testar outros status aqui
+      status: 'pendente' 
     }
   end
 

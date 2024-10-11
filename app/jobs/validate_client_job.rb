@@ -67,7 +67,7 @@ class ValidateClientJob < ApplicationJob
     if response.code == 200
       Rails.logger.info("Notificação enviada com sucesso para o Espresso: #{response.code} - #{response.body}")
     else
-      # Logar mais informações detalhadas quando ocorrer erro
+      
       Rails.logger.error("Erro ao notificar o Espresso: #{response.code} - #{response.body}")
       Rails.logger.error("Corpo da resposta: #{response.body}")
     end

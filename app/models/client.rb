@@ -20,14 +20,15 @@ class Client < ApplicationRecord
   end
 
   def valid_credentials?
-    response = OmieApi.validate_credentials(erp_key, erp_secret)
-
-    return true if response.success?
-
-    Rails.logger.error("Falha na validação das credenciais: #{response.body}")
-    false
+    response = OmieApi.validate_credentials(self)
+    if response.success?
+      true
+    else
+      Rails.logger.error("Falha na validação das credenciais")
+      false
+    end
   rescue StandardError => e
     Rails.logger.error("Erro ao validar credenciais: #{e.message}")
     false
   end
-end
+end   
