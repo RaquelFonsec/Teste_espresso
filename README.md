@@ -273,8 +273,27 @@ Recepção de Eventos: O controlador recebe eventos de webhook do tipo create_pa
 
 Processamento de Eventos: O controlador processa os eventos, valida os dados e aciona o job CreatePayableAccountJob para gerenciar a criação das contas a pagar no sistema.
 
-Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
-(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
+
+Para criaçao de um endpoint de webook utilize os seguintes parametros 
+
+curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
+-H "Content-Type: application/json" \
+-d '{
+  "webhook_endpoint": {
+    "url": "https://eorwcvkk5u25m7w.m.pipedream.net/",
+    "event_type": "conta_a_pagar",
+    "client_id": 12345,
+    "company_id": 1,
+    "subscriptions": ["*"],
+    "enabled": true,
+    "erp": "omie"
+  }
+}'
+
+{"message":"Webhook inscrito com sucesso"}
+
+
+
 
 
 Testando a Implementação
@@ -295,12 +314,17 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
       "cost": 100.0,
       "due_date": "2024-12-31",
       "codigo_lancamento_integracao": "xxx",
-      "client_code": "25",
+      "client_code": "xx",
       "categoria": "D",
       "company_id": 1
     }
   }
 }'
+
+{"message":"Notificação para marcar como pago em processo"}
+
+Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
 
 
 
@@ -361,8 +385,11 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
   }                      
 }'
 
+{"message":"Conta a pagar em processo de criação"}
 
 
+Notificações: Após a execução, as notificações sobre o status da operação são enviadas para o serviço de notificação, 
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
 
 Descrição do Job MarkAsPaidJob
 O job MarkAsPaidJob é responsável por marcar uma conta a pagar como paga no sistema e enviar uma notificação sobre essa alteração para um endpoint externo. Esse processo é crucial para garantir que as transações financeiras sejam registradas corretamente, permitindo uma gestão eficaz do fluxo de caixa.
