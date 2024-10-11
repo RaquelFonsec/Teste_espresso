@@ -31,13 +31,6 @@ class MarkAsPaidJob < ApplicationJob
       false
     end
   end
-  
-  def payload_status(payable)
-    return 'paid' if payable.status == 'paid'
-    'pending'
-  end
-  
-  
 
   def handle_notification(payable)
     response = send_notification(payable)
@@ -45,6 +38,7 @@ class MarkAsPaidJob < ApplicationJob
   end
 
   def update_payable_status(payable, response)
+    Rails.logger.info("Resposta recebida ao tentar notificar a conta a pagar #{payable.id}: #{response.inspect}")
     if response.success?
       payable.update(status: 'paid')
       Rails.logger.info("Conta a pagar #{payable.id} marcada como paga.")
@@ -108,10 +102,11 @@ class MarkAsPaidJob < ApplicationJob
       cost: payable.cost,
       due_date: payable.due_date,
       category: payable.categoria,
-      integration_code: payable.codigo_lancamento_integracao
+      integration_code: payable.codigo_lancamento_integracao,
+      payment_id: payable.payment_id 
     }
   end
-
+  
   def payload_status(payable)
     payable.status == 'paid' ? 'paid' : 'pending'
   end

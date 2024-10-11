@@ -10,5 +10,7 @@ FactoryBot.define do
     codigo_lancamento_integracao { '123' }
     status { 'pending' }
     notification_attempts { 0 }
+    payment_id { nil }  
   end
 end
+
