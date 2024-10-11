@@ -262,20 +262,63 @@ Registra no log o resultado da tentativa de notificação.
 
 Fluxo de Criação de Contas a Pagar
 
+Implementação do Controlador de Webhooks
+Descrição
+O controlador WebhooksController foi adicionado ao sistema para permitir a recepção e o processamento de eventos de webhook, especificamente para a criação de contas a pagar. Este fluxo é crucial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as respectivas contas a pagar sejam criadas no ERP Omie.
+
+Funcionalidades
+Recepção de Eventos: O controlador recebe eventos de webhook do tipo create_payable, permitindo que os dados necessários para a criação de contas a pagar sejam enviados diretamente para o sistema.
+
+Processamento de Eventos: O controlador processa os eventos, valida os dados e aciona o job CreatePayableAccountJob para gerenciar a criação das contas a pagar no sistema.
+
+Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.
+
+Job CreatePayableAccountJob
+O job CreatePayableAccountJob é responsável pela lógica de criação das contas a pagar no sistema. Ele segue um fluxo bem definido para garantir que todas as operações sejam realizadas de maneira eficiente e segura:
+
+Recebimento dos Parâmetros: O job recebe dados como ID do cliente, chaves de autenticação, categoria, código da conta, data de vencimento e valor.
+
+Validação da Data de Vencimento: Converte a data de vencimento em um objeto de data e verifica se é válida.
+
+Verificação de Disponibilidade do Servidor: Confirma se a API do Omie está acessível; se não, tenta novamente até 3 vezes.
+
+Validação dos Parâmetros: Utiliza um validador para garantir que todos os dados estão corretos; se houver erros, notifica a falha.
+
+Criação da Conta a Pagar: Se todos os dados forem válidos, o job tenta criar a conta a pagar e a salva no banco de dados.
+
+Notificações: Envia notificações sobre o status da operação (sucesso ou falha) e registra os resultados no log.
+
+Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, com validação e tratamento de erros adequados.
+
+Testando a Implementação
+Para testar a implementação do webhook, você pode usar o seguinte comando curl para simular a recepção de um evento de criação de conta a pagar:
 
 
-O fluxo de criação de contas a pagar tem como objetivo registrar os reembolsos aprovados no sistema Espresso e criar as respectivas contas a pagar no ERP Omie. Esse processo é essencial para garantir que as transações financeiras sejam adequadamente registradas e que o fluxo de caixa da empresa seja mantido em ordem
+curl -X POST http://localhost:3000/webhooks/receive_webhook \
+-H "Content-Type: application/json" \
+-d '{
+  "webhook_event": {
+    "event_type": "create_payable",
+    "data": {
+      "client_id": xxx,
+      "erp_key": null,
+      "erp_secret": null,
+      "category_code": "2.01.04",
+      "account_code": "xxx",
+      "cost": 100.0,
+      "due_date": "2024-12-31",
+      "codigo_lancamento_integracao": "xxx",
+      "client_code": "25",
+      "categoria": "D",
+      "company_id": 1
+    }
+  }
+}'
 
-Execução do Comando
+pelo rails c
 
-Para iniciar a criação de uma conta a pagar, utilize o seguinte comando:
-
-
-
-Rails c
-
-
- :CreatePayableAccountJob.perform_later(client_params: {
+CreatePayableAccountJob.perform_later(client_params: {
   client_id: xxxx,
   erp_key: ENV['ERP_KEY'],                        
   erp_secret: ENV['ERP_SECRET'],                 
@@ -290,78 +333,30 @@ Rails c
 
 
 
+Fluxo de Baixa de Pagamento
 
-
-client_id:Identificador único do cliente no sistema, utilizado para associar as contas a pagar ao cliente correto obtido nos fluxos anteriores
-
-erp_key:Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie para criar a conta a pagar
-
-erp_secret:Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
-
-category_code: "2.01.04" Código da categoria que classifica a conta a pagar.
-
-account_code: Código da conta corrente onde a transação será registrada,obtida nos fluxos anteriores
-
-due_date: Data de vencimento da conta a pagar, que determina quando o pagamento deve ser efetuado.
-
-cost: Valor da conta a pagar, representando a quantia que deve ser paga ao fornecedor ou prestador de serviço.
-
-codigo_lancamento_integracao: Código de integração que pode ser utilizado para rastrear o lançamento específico no sistema, permitindo um melhor controle e auditoria,obtido nos fluxos anteriores
-
-client_code: Código do cliente que pode ser utilizado para identificar rapidamente as informações do cliente no sistema, especialmente útil para integração com outros sistemas.
-
-categoria: "D" Representa a categoria da conta a pagar, que pode ser usada para fins de classificação contábil ou relatório
-
-
-
-**Resumo do Fluxo de Criação de Contas a Pagar**
-
-
-O job CreatePayableAccountJob realiza o seguinte fluxo para criar contas a pagar:
-
-  
-
-Recebimento dos Parâmetros: Recebe dados como ID do cliente, chaves de autenticação, categoria, código da conta, data de vencimento e valor.
-
-Validação da Data de Vencimento: Converte a data de vencimento em um objeto de data e verifica se é válida.
-
-Verificação de Disponibilidade do Servidor: Confirma se a API do Omie está acessível; se não, tenta novamente até 3 vezes.
-
-Validação dos Parâmetros: Utiliza um validador para garantir que todos os dados estão corretos; se houver erros, notifica a falha.
-Criação da Conta a Pagar: Se tudo estiver válido, tenta criar a conta a pagar e a salva no banco de dados.
-Notificações: Envia notificações sobre o status da operação (sucesso ou falha) e registra os resultados no log.
-Esse fluxo assegura que as contas a pagar sejam criadas de maneira confiável, com validação e tratamento de erros adequados.
-
-
-
-##Fluxo de Baixa de Pagamento
-
-
+O fluxo de baixa de pagamento é responsável por marcar uma conta a pagar como paga, registrando essa transação no sistema e enviando uma notificação apropriada. Isso garante que os pagamentos sejam atualizados corretamente, facilitando a gestão financeira da empresa.
 
 Para executar o job, você pode utilizar o seguinte comando no console do Rails:
 
 MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
 
 
-O job MarkAsPaidJob é responsável por processar a baixa de uma conta a pagar, marcando-a como paga e enviando uma notificação sobre essa alteração. O fluxo é composto pelas seguintes etapas:
+Testando o Webhook
+Você pode simular a recepção de um evento de webhook para marcar uma conta a pagar como paga utilizando o seguinte comando curl:
 
-1. Recebimento do ID da Conta a Pagar:
-O job começa recebendo um payable_id como parâmetro. Esse ID refere-se à conta a pagar que será processada. No console do Rails, você pode executar o comando MarkAsPaidJob.perform_later(ID), substituindo o ID pelo valor correto da conta a pagar.
+curl -X POST http://localhost:3000/webhooks/receive_webhook \
+-H "Content-Type: application/json" \
+-d '{
+  "webhook_event": {
+    "event_type": "mark_as_paid",
+    "data": {
+      "payable_id": 207  // ID do pagamento para reembolso
+    }                 
+  }                      
+}'
 
-2. Localização da Conta a Pagar:
-A função find_payable busca a conta no banco de dados utilizando o ID fornecido. Se a conta não for encontrada, o processo é interrompido e uma mensagem de erro é registrada nos logs, indicando que o ID não foi localizado. Caso a conta seja encontrada, o fluxo continua.
 
-3. Verificação de Notificação:
-O job usa a função skip_notification? para verificar se já existe um reembolso registrado e pago para a conta. Se houver um reembolso e ele já foi pago, o job evita enviar uma nova notificação, e um log é gerado informando que a notificação foi pulada.
-
-4. Criação e Envio de Notificação:
-Caso a notificação não seja pulada, o job constrói um payload (dados como código da conta, valor, data de vencimento, etc.) através das funções build_payload e base_payload. Esse payload contém todas as informações necessárias sobre a conta e é enviado para um endpoint via uma requisição HTTP (HTTParty.post). Se a resposta for bem-sucedida (status 200), o processo segue para o próximo passo.
-
-5. Atualização do Status da Conta:
-Se a notificação for enviada com sucesso, a função update_payable_status marca a conta a pagar como "paga" (paid). Caso contrário, o job lida com a falha, incrementando o contador de tentativas de notificação e programando uma nova tentativa, se necessário.
-
-6. Tentativas de Notificação:
-A função handle_notification_failure gerencia as falhas de notificação. Se o número de tentativas exceder 3, a conta é marcada como "failed". Caso contrário, o job será reprogramado para tentar enviar a notificação novamente após 10 minutos.
 
 
 
