@@ -125,6 +125,32 @@ rails server
 Executa os testes com RSpec
 bundle exec rspec
 
+
+
+
+
+Como se Cadastrar na Omie e Obter Credenciais
+1. Criando uma Conta de Teste na Omie
+Para criar uma conta de teste na Omie, siga estes passos:
+
+Acesse o Site da Omie:
+
+Vá para Omie.
+Inscreva-se:
+
+Clique em "Experimente Grátis" ou "Comece Agora" na página inicial.
+Preencha o formulário de cadastro com suas informações pessoais e de empresa.
+Você pode usar um e-mail válido e uma senha para criar sua conta.
+Confirme seu E-mail:
+
+Após o cadastro, verifique seu e-mail e siga o link de confirmação enviado pela Omie.
+2. Obtendo Credenciais de API
+Após criar sua conta, você precisará obter as credenciais de API (chaves) para autenticar suas requisições:
+
+abaixo siga as orientaçoes para cadastrar um cliente,buscar categorias e listar conta corrente e incluir contas a pagar
+
+
+
 Uso da API
 
 Endpoint: Configuração do Cliente Integrador
