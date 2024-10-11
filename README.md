@@ -299,29 +299,29 @@ curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
 Testando a Implementação
 Para testar a implementação do webhook, você pode usar o seguinte comando curl para simular a recepção de um evento de criação de conta a pagar:
 
-
 curl -X POST http://localhost:3000/webhooks/receive_webhook \
 -H "Content-Type: application/json" \
 -d '{
   "webhook_event": {
     "event_type": "create_payable",
     "data": {
-      "client_id": xxx,
+      "client_id": xxxx,
+      "company_id": 1,  // Inclua um ID válido
       "erp_key": null,
       "erp_secret": null,
       "category_code": "2.01.04",
-      "account_code": "xxx",
+      "account_code": "xxxxx",
       "cost": 100.0,
       "due_date": "2024-12-31",
       "codigo_lancamento_integracao": "xxx",
-      "client_code": "xx",
-      "categoria": "D",
-      "company_id": 1
+      "client_code": "xxx",
+      "categoria": "D"
     }
   }
 }'
 
-{"message":"Notificação para marcar como pago em processo"}
+{"message":"Conta a pagar em processo de criação"}
+
 
 Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
 (https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream e, em seguida, notificadas à Omie.
