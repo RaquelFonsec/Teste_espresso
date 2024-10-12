@@ -128,6 +128,51 @@ bundle exec rspec
 
 
 
+Resumo dos Testes Realizados
+No projeto, foram implementados mais de 70 testes utilizando RSpec e WebMock para garantir a robustez e a qualidade do sistema. O WebMock foi utilizado para simular chamadas HTTP externas, permitindo testar interações com APIs sem depender de sua disponibilidade. Abaixo está uma descrição das  áreas testadas:
+
+1. Jobs e Background Processing
+CreatePayableAccountJob:
+
+Testes para a criação de contas a pagar com sucesso.
+Verificação de comportamento quando o servidor está indisponível.
+Validação de notificações enviadas em caso de sucesso ou falha.
+
+ValidateClientJob:
+
+Testes para validar credenciais com respostas bem-sucedidas e falhas.
+Verificação do comportamento ao lidar com exceções durante a validação.
+
+MarkAsPaidJob:
+
+Testes para garantir que a notificação de pagamento é registrada corretamente.
+Verificação da lógica de tentativas de notificação e o que acontece quando o limite de tentativas é atingido.
+
+
+2. Modelos
+Payable:
+
+Testes de validação para garantir que todos os campos obrigatórios estão presentes.
+Verificação das associações e métodos personalizados, como reimbursement_existe?, paid? e failed?.
+Reimbursement:
+
+Testes de validação e associações.
+Verificação do comportamento de métodos como register_payment! e payment_registered?.
+
+3. Serviços
+NotificationService:
+Testes para o envio de notificações, registrando mensagens de erro e sucesso.
+Verificação do tratamento de falhas na comunicação com APIs externas, utilizando o WebMock para simular respostas.
+
+
+4. Validações Personalizadas
+PayableAccountValidator:
+Testes para validar a presença de campos obrigatórios e a lógica da data de vencimento.
+
+
+
+
+
 Visão Geral da Aplicação
 
 
