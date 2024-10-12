@@ -70,7 +70,8 @@ A aplicação implementa três fluxos principais:
 - **Redis**: Para gerenciamento de filas e jobs em background.
 
 - **RSpec**: Para testes automatizados.
-
+- 
+ -**Sidekiq**: Utilizado para processar jobs em background de forma eficiente, integrando-se ao Redis.
   
 
 ## Configuração do Ambiente
@@ -132,7 +133,8 @@ Visão Geral da Aplicação
 
 Esta aplicação foi desenvolvida para automatizar a gestão de contas a pagar, integrando dados de reembolsos aprovados no sistema Espresso com o ERP Omie. O sistema facilita a criação, validação e marcação de pagamentos de forma eficiente, utilizando uma arquitetura baseada em jobs para realizar as tarefas críticas de forma assíncrona e otimizada. Além disso, a aplicação processa eventos de webhook, desencadeando ações automáticas com base nesses eventos.
 
-Funcionalidades Principais
+
+-**Funcionalidades Principais**
 
 
 Criação de Contas a Pagar
@@ -159,7 +161,7 @@ Broadcast de Webhooks
 O BroadcastWebhookService distribui os eventos recebidos para todos os endpoints inscritos, de acordo com o tipo de evento. Essa funcionalidade garante que diversos sistemas possam ser atualizados simultaneamente, mantendo a consistência e integridade dos dados.
 
 
-Para o funcionamento correto siga as orientaçoes abaixo:
+**Para o funcionamento correto do sistema siga as orientaçoes abaixo**:
 
 
 Como se Cadastrar na Omie e Obter Credenciais
@@ -181,7 +183,7 @@ Após o cadastro, verifique seu e-mail e siga o link de confirmação enviado pe
 Após criar sua conta, você precisará obter as credenciais de API (chaves) para autenticar suas requisições:
 
 
-Abaixo siga as orientaçoes para cadastrar um cliente,buscar categorias e listar conta corrente e incluir contas a pagar
+**Abaixo siga as orientaçoes para cadastrar um cliente,buscar categorias e listar conta corrente e incluir contas a pagar**
 
 
 
@@ -205,6 +207,7 @@ codigo_cliente_integracao: Identificador único do cliente.
 email: Endereço de e-mail do cliente.
 razao_social: Nome completo da empresa.
 nome_fantasia: Nome pelo qual a empresa é conhecida.
+
 Resposta (Exemplo):
 
 { "codigo_cliente_omie": 0000001, "codigo_cliente_integracao": "222", "codigo_status": "0", "descricao_status": "Cliente cadastrado com sucesso!" }
@@ -264,6 +267,8 @@ Instruções para Preencher os Campos
 
 Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher os campos com os valores obtidos nas etapas anteriores.
 
+**Após essas etapas siga para as demais**:
+
 
 
 Execução da Validação do Cliente Integrador
@@ -281,8 +286,9 @@ ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "1
 "omie": Nome da aplicação que está realizando a validação.
 ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie para criar a conta a pagar
 ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
-"138": Código do cliente integração que está sendo validado. (Exemplo)
-Uso do Webhook
+"xxx": Código do cliente integração que está sendo validado.
+
+***Uso do Webhook**
 
 
 Durante esse processo, a aplicação será notificada através do seguinte webhook: https://eo2180vhu0thrzi.m.pipedream.net/. É importante garantir que o webhook esteja configurado para receber notificações sobre o status da validação.
@@ -298,8 +304,8 @@ A classe ValidateClientJob é responsável por validar as credenciais de integra
 
 Configuração da Fila: O job é enfileirado na fila padrão (default).
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
-Método perform:
 
+Método perform:
 
 Executa a validação, registra no log e chama o método validate_credentials.
 
@@ -308,20 +314,20 @@ Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
-Método handle_validation_failure:
 
+Método handle_validation_failure:
 
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
 Notifica sobre falha se o limite máximo de tentativas for atingido.
-Método notify_espresso:
 
+Método notify_espresso:
 
 Envia uma notificação ao endpoint designado (Espresso) com o status da validação.
 Registra no log o resultado da tentativa de notificação.
 
 
 
-Fluxo de Criação de Contas a Pagar
+**Fluxo de Criação de Contas a Pagar**
 
 Implementação do Controlador de Webhooks
 
@@ -341,10 +347,10 @@ curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
 -H "Content-Type: application/json" \
 -d '{
   "webhook_endpoint": {
-    "url": "https://eorwcvkk5u25m7w.m.pipedream.net/",
+    "url": "https://eorwcvkk5u25m7w.m.pipedream.net/",(url do webhook pipedream configurado para essa aplicaçao)
     "event_type": "conta_a_pagar",
-    "client_id": 12345,
-    "company_id": 1,
+    "client_id": xxx,
+    "company_id": xxx,
     "subscriptions": ["*"],
     "enabled": true,
     "erp": "omie"
@@ -352,6 +358,10 @@ curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
 }'
 
 {"message":"Webhook inscrito com sucesso"}
+
+
+Certifique-se de substituir os valores xxx pelos IDs reais do cliente e da empresa.
+O URL do webhook deve ser um endpoint acessível para receber os dados enviados pelo sistema.
 
 
 
@@ -370,9 +380,9 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
       "company_id": 1,  // Inclua um ID válido
       "erp_key": null,
       "erp_secret": null,
-      "category_code": "2.01.04",
+      "category_code": "2.01.04",( exemplo de teste)
       "account_code": "xxxxx",
-      "cost": 100.0,
+      "cost": 100.0,(exemplo de teste)
       "due_date": "2024-12-31",
       "codigo_lancamento_integracao": "xxx",
       "client_code": "xxx",
@@ -441,7 +451,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
   "webhook_event": {
     "event_type": "mark_as_paid",
     "data": {
-      "payable_id": 27  // ID do pagamento para reembolso
+      "payable_id": xxx  // ID do pagamento para reembolso
     }                 
   }                      
 }'
@@ -462,6 +472,7 @@ Funcionamento do Job
 Execução do Job:
 
 O job é chamado com um payable_id, que é o identificador da conta a pagar que deve ser marcada como paga.
+
 Busca da Conta a Pagar:
 
 
@@ -470,6 +481,7 @@ Verificação de Notificação:
 
 
 Antes de prosseguir, o job verifica se a notificação deve ser enviada usando o método skip_notification?. Se a conta já tiver um reembolso registrado e pago, a notificação é pulada e um log é gerado informando que não é necessário enviar uma nova notificação.
+
 Envio da Notificação:
 
 
@@ -477,15 +489,18 @@ Se a notificação não for pulada, o job chama o método handle_notification, q
 Atualização do Status da Conta a Pagar:
 
 
+
 Após enviar a notificação, o job atualiza o status da conta a pagar com base na resposta recebida do endpoint. Se a notificação for bem-sucedida (status 200), a conta é marcada como "paga". Caso contrário, o job lida com a falha de notificação.
 Gerenciamento de Falhas:
 
 
 Se ocorrer uma falha ao enviar a notificação, o job incrementa o contador de tentativas de notificação. Se o número de tentativas ultrapassar 3, a conta a pagar é marcada como "failed". Caso contrário, o job reprograma a notificação para tentar novamente após 10 minutos.
+
 Construção do Payload:
 
 
 O payload da notificação é construído a partir de dados essenciais da conta a pagar, como código da conta, código da categoria, código do cliente, custo e data de vencimento. O status da conta também é incluído no payload.
+
 Envio da Requisição:
 
 
