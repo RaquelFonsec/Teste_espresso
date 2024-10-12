@@ -70,8 +70,7 @@ A aplicação implementa três fluxos principais:
 - **Redis**: Para gerenciamento de filas e jobs em background.
 
 - **RSpec**: Para testes automatizados.
-- 
-**Sidekiq**: Utilizado para processar jobs em background de forma eficiente, integrando-se ao Redis.
+- **Sidekiq**: Utilizado para processar jobs em background de forma eficiente, integrando-se ao Redis.
   
 
 ## Configuração do Ambiente
