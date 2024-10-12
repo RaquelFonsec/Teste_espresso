@@ -435,6 +435,11 @@ CreatePayableAccountJob.perform_later(client_params: {
 })
 
 
+A lógica dupla entre o CreatePayableAccountJob e o NotificationService trabalha de forma complementar para garantir que o processo de criação de uma conta a pagar seja robusto, com retentativas automáticas em caso de falha, e com notificações detalhadas sobre o sucesso ou falha do processo. Essa abordagem aumenta a resiliência do sistema e facilita o monitoramento de falhas operacionais.
+
+
+
+
 
 Fluxo de Baixa de Pagamento
 
