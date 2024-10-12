@@ -373,11 +373,20 @@ Registra no log o resultado da tentativa de notificação.
 
 **Fluxo de Criação de Contas a Pagar**
 
+OBSERVAÇAO:
+
+Criação de Webhooks Múltiplos
+
+O sistema permite a criação de múltiplos webhooks, possibilitando a integração com diversas funcionalidades. Através do endpoint de criação de webhooks, é possível registrar novos endpoints com diferentes URLs e tipos de eventos. Isso significa que, além do webhook já configurado para contas a pagar, podemos facilmente adicionar outros webhooks para gerenciar diferentes eventos, como notificações de novos usuários ou atualizações de status. Essa flexibilidade torna a aplicação mais adaptável e facilita a comunicação com outros sistemas.
+
+
+
 Implementação do Controlador de Webhooks
 
 Descrição
 
-O controlador WebhooksController foi adicionado ao sistema para permitir a recepção e o processamento de eventos de webhook, especificamente para a criação de contas a pagar. Este fluxo é crucial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as respectivas contas a pagar sejam criadas no ERP Omie.
+
+O controlador WebhooksController  permiti a recepção e o processamento de eventos de webhook, especificamente para a criação de contas a pagar. Este fluxo é crucial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as respectivas contas a pagar sejam criadas no ERP Omie.
 
 Funcionalidades
 Recepção de Eventos: O controlador recebe eventos de webhook do tipo create_payable, permitindo que os dados necessários para a criação de contas a pagar sejam enviados diretamente para o sistema.
