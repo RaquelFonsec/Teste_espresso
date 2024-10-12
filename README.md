@@ -441,7 +441,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
   "webhook_event": {
     "event_type": "mark_as_paid",
     "data": {
-      "payable_id": 207  // ID do pagamento para reembolso
+      "payable_id": 27  // ID do pagamento para reembolso
     }                 
   }                      
 }'
