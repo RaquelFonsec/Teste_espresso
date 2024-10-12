@@ -127,6 +127,39 @@ bundle exec rspec
 
 
 
+Visão Geral da Aplicação
+
+
+Esta aplicação foi desenvolvida para automatizar a gestão de contas a pagar, integrando dados de reembolsos aprovados no sistema Espresso com o ERP Omie. O sistema facilita a criação, validação e marcação de pagamentos de forma eficiente, utilizando uma arquitetura baseada em jobs para realizar as tarefas críticas de forma assíncrona e otimizada. Além disso, a aplicação processa eventos de webhook, desencadeando ações automáticas com base nesses eventos.
+
+Funcionalidades Principais
+
+
+Criação de Contas a Pagar
+Ao receber um evento de create_payable via webhook, a aplicação dispara o job CreatePayableAccountJob, que é responsável por processar os dados do evento e registrar automaticamente as contas no ERP Omie. Esse job assegura que os dados sejam corretamente transmitidos e armazenados no sistema Omie.
+
+Marcar Contas como Pagas
+
+Quando o evento de mark_as_paid é recebido, a aplicação aciona o job MarkAsPaidJob. Esse job atualiza o status da conta no Omie, marcando-a como paga. O job garante que a sincronização entre o sistema interno e o ERP Omie ocorra de forma rápida e precisa.
+
+Validação de Contas a Pagar
+
+Antes de criar ou atualizar uma conta, o serviço PayableAccountValidator valida dados críticos como client_id, account_code, cost, entre outros. Esse processo de validação ocorre antes da execução do CreatePayableAccountJob ou MarkAsPaidJob, garantindo que apenas dados corretos e completos sejam processados.
+
+Envio de Notificações
+
+O NotificationService é responsável por centralizar o envio de notificações para APIs externas, como o Omie, e para outros endpoints configurados. Este serviço trabalha em conjunto com os jobs de criação e marcação de pagamento para garantir que todas as alterações de estado sejam comunicadas de forma adequada e em tempo real.
+
+Recepção de Webhooks
+
+A aplicação conta com endpoints dedicados para receber eventos de webhook. Quando um evento relevante é recebido, os jobs correspondentes são acionados para processar a informação, automatizando fluxos de trabalho de forma integrada.
+
+Broadcast de Webhooks
+
+O BroadcastWebhookService distribui os eventos recebidos para todos os endpoints inscritos, de acordo com o tipo de evento. Essa funcionalidade garante que diversos sistemas possam ser atualizados simultaneamente, mantendo a consistência e integridade dos dados.
+
+
+Para o funcionamento correto siga as orientaçoes abaixo:
 
 
 Como se Cadastrar na Omie e Obter Credenciais
@@ -147,7 +180,8 @@ Após o cadastro, verifique seu e-mail e siga o link de confirmação enviado pe
 2. Obtendo Credenciais de API
 Após criar sua conta, você precisará obter as credenciais de API (chaves) para autenticar suas requisições:
 
-abaixo siga as orientaçoes para cadastrar um cliente,buscar categorias e listar conta corrente e incluir contas a pagar
+
+Abaixo siga as orientaçoes para cadastrar um cliente,buscar categorias e listar conta corrente e incluir contas a pagar
 
 
 
@@ -268,8 +302,9 @@ Método perform:
 
 
 Executa a validação, registra no log e chama o método validate_credentials.
-Método validate_credentials:
 
+
+Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
@@ -350,7 +385,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 Notificações: Após a execução, as notificações sobre o status da operação (sucesso ou falha) são enviadas para o serviço de notificação, 
-(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream e, em seguida, notificadas à Omie.
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream e, em seguida, notificadas à espresso.
 
 Criação de Conta a Pagar : Quando o evento é "create_payable", o webhook extrai os dados fornecidos e envia esses dados para Job CreatePayableAccountJob  que cria a conta a pagar
 
@@ -415,7 +450,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 Notificações: Após a execução, as notificações sobre o status da operação são enviadas para o serviço de notificação, 
-(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.e, em seguida, notificadas à Omie.
+(https://eorwcvkk5u25m7w.m.pipedream.net/ ) Pipedream.e, em seguida, notificadas à espresso.
 
 Marcar como Paga : Se o evento for "mark_as_paid", o webhook envia o ID da conta a pagar para o Job MarkAsPaidJob. Esse trabalho busca a conta associada ao ID e tenta notificá-la. Dependendo da resposta da notificação, o trabalho pode marcar a conta como pagamento ou agendar novos testes em caso de falha. Se o processo for bem-sucedido, a conta será atualizada para "pagamento", mas, caso ocorram falhas repetidas, ela pode ser marcada como "failed"
 
