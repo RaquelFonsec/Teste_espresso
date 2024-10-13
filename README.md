@@ -332,10 +332,41 @@ ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da 
 ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
 "xxx": Código do cliente integração que está sendo validado.
 
+
+
 ***Uso do Webhook**
 
+Criar o Webhook para Notificação
 
-Durante esse processo, a aplicação será notificada através do seguinte webhook: https://eo2180vhu0thrzi.m.pipedream.net/. É importante garantir que o webhook esteja configurado para receber notificações sobre o status da validação.
+curl -X POST http://localhost:3000/webhooks \
+-H "Content-Type: application/json" \
+-d '{
+  "event": "client_validation",
+  "url": "https://eo2180vhu0thrzi.m.pipedream.net/",  # Webhook de notificação
+  "app_name": "omie",
+  "client_id": 1,
+  "integration_code": "xx",
+  "app_key": "'"${APP_KEY}"'",
+  "app_secret": "'"${APP_SECRET}"'"
+}'
+
+
+
+Notificar o Status da Validação:
+
+curl -X POST https://eo2180vhu0thrzi.m.pipedream.net/ \
+-H "Content-Type: application/json" \
+-d '{
+  "event": "client_validation_response",
+  "client_id": 1,
+  "status": "valid",  # ou "invalid", dependendo do resultado
+  "integration_code": "xxx",
+  "app_key": "'"${APP_KEY}"'",
+  "app_secret": "'"${APP_SECRET}"'"
+}'
+
+
+
 
 
 Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
@@ -429,6 +460,7 @@ Observação: Substitua os valores xxx pelos IDs reais do cliente e da empresa. 
 6. Testando a Implementação
 Para verificar a funcionalidade do webhook, utilize o seguinte comando de teste
 
+
 curl -X POST http://localhost:3000/webhooks/receive_webhook \
 -H "Content-Type: application/json" \
 -d '{
@@ -445,12 +477,16 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
       "due_date": "2024-12-31",
       "codigo_lancamento_integracao": "xxx",
       "client_code": "xxx",
-      "categoria": "D"
+      "categoria": "D",
+      "validation_webhook_url": "https://eo2180vhu0thrzi.m.pipedream.net/"  # URL do webhook do Pipedream
     }
   }
 }'
 
+
 {"message":"Conta a pagar em processo de criação"}
+
+
 
 7. Fluxo do Job CreatePayableAccountJob
 
@@ -628,7 +664,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 {"message":"Notificação para marcar como pago em processo"}
 
 
-
+Recebendo o Status da Validação
 
 Considerações Finais
 
