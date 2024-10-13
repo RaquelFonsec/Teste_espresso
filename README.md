@@ -626,6 +626,12 @@ Job Marca Conta a Pagar como Paga
 Notificações de Status 
 
 
+Fluxo Completo
+
+Omie baixa a conta a pagar e envia uma notificação para o integrador.
+Integrador recebe a notificação e inicia o MarkAsPaidJob para processar a baixa.
+Job marca a conta como paga e notifica o Espresso sobre o pagamento.
+
 
 
 Considerações Finais
@@ -652,7 +658,8 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 {"message":"Notificação para marcar como pago em processo"}
 
 
-Recebendo o Status da Validação
+
+
 
 Considerações Finais
 
