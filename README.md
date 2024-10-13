@@ -316,89 +316,72 @@ Ao utilizar o endpoint de inclusão de contas a pagar, é fundamental preencher 
 
 
 Execução da Validação do Cliente Integrador
-
-
-
-Para executar a tarefa de validação do cliente integrador, essa tarefa é fundamental para assegurar que as informações do cliente estejam corretamente cadastradas e sincronizadas com a API do Omie.
+Para executar a tarefa de validação do cliente integrador, que é fundamental para assegurar que as informações do cliente estejam corretamente cadastradas e sincronizadas com a API do Omie, siga as instruções abaixo.
 
 Comando de Execução
+Para iniciar o processo de validação, utilize o seguinte comando:
 
-ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "138") (exemplo via rails c)
+ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "Código do cliente de integração que está sendo validado")
 
+
+Parâmetros do Comando:
 
 1: ID do cliente que você deseja validar.
 "omie": Nome da aplicação que está realizando a validação.
-ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie para criar a conta a pagar
-ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie
-"xxx": Código do cliente integração que está sendo validado.
-
-
-
-***Uso do Webhook**
-
-Criar o Webhook para Notificação
-
-curl -X POST http://localhost:3000/webhooks \
--H "Content-Type: application/json" \
--d '{
-  "event": "client_validation",
-  "url": "https://eo2180vhu0thrzi.m.pipedream.net/",  # Webhook de notificação
-  "app_name": "omie",
-  "client_id": 1,
-  "integration_code": "xx",
-  "app_key": "'"${APP_KEY}"'",
-  "app_secret": "'"${APP_SECRET}"'"
-}'
-
-
-
-Notificar o Status da Validação:
-
-curl -X POST https://eo2180vhu0thrzi.m.pipedream.net/ \
--H "Content-Type: application/json" \
--d '{
-  "event": "client_validation_response",
-  "client_id": 1,
-  "status": "valid",  # ou "invalid", dependendo do resultado
-  "integration_code": "xxx",
-  "app_key": "'"${APP_KEY}"'",
-  "app_secret": "'"${APP_SECRET}"'"
-}'
-
-
-
-
+ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie.
+ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie.
+"xxx": Código do cliente de integração que está sendo validado.
 
 Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
 
 
-Resumo da Classe ValidateClientJob (FLUXO DO CLIENTE INTEGRADOR)
 
-
+Resumo da Classe ValidateClientJob (Fluxo do Cliente Integrador)
 A classe ValidateClientJob é responsável por validar as credenciais de integração de um cliente com um sistema ERP através da API da Omie. Aqui estão os principais pontos da classe:
 
 Configuração da Fila: O job é enfileirado na fila padrão (default).
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
-
+Métodos Principais
 Método perform:
 
 Executa a validação, registra no log e chama o método validate_credentials.
-
-
 Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
-
 Método handle_validation_failure:
 
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
 Notifica sobre falha se o limite máximo de tentativas for atingido.
-
 Método notify_espresso:
 
 Envia uma notificação ao endpoint designado (Espresso) com o status da validação.
 Registra no log o resultado da tentativa de notificação.
+
+
+Como o Webhook é Usado na Validação do Cliente Integrador
+Na classe ValidateClientJob, um webhook é utilizado para notificar o sistema Espresso sobre o resultado da validação das credenciais de integração do cliente. Aqui está como ele funciona:
+
+Notificação de Sucesso ou Falha:
+
+Após validar as credenciais do cliente com a API do Omie, a classe decide se deve notificar o Espresso sobre o sucesso ou a falha da validação.
+Sucesso: Se as credenciais forem válidas, a classe envia uma notificação de sucesso.
+Falha: Se ocorrer uma falha, seja por erro nas credenciais ou por problemas de conexão, uma notificação de falha é enviada.
+Endpoint de Notificação:
+
+A notificação é enviada para um endpoint específico do sistema Espresso. 
+Payload da Notificação:
+
+A notificação inclui um payload (carga útil) que contém informações importantes, como:
+Código do Cliente de Integração: Identificador do cliente que está sendo validado.
+Status: Indica se a validação foi bem-sucedida ou se houve uma falha.
+Erro: Se houver uma falha, a mensagem de erro correspondente é incluída.
+ID da Empresa: O ID da empresa associada à validação.
+Registro em Log:
+
+O sistema registra no log tanto o envio da notificação quanto a resposta recebida do Espresso. Isso ajuda na auditoria e no rastreamento de problemas.
+
+
 
 
 
@@ -558,6 +541,11 @@ Validação dos Parâmetros: O job valida os parâmetros recebidos. Se houver er
 Criação da Conta a Pagar: Se todos os dados forem válidos, o job tenta criar a conta a pagar e salva as informações no banco de dados.
 
 Notificações: O job envia notificações sobre o sucesso ou falha da operação, registrando todos os eventos relevantes no log.
+
+
+
+
+
 
 
 
