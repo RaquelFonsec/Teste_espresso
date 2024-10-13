@@ -451,7 +451,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
     "event_type": "create_payable",
     "data": {
       "client_id": xxxx,
-      "company_id": 1,
+      "company_id": 1,   ##1 é um exemplo ,importante o ID válido de company
       "erp_key": null,
       "erp_secret": null,
       "category_code": "2.01.04",
@@ -461,7 +461,6 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
       "codigo_lancamento_integracao": "xxx",
       "client_code": "xxx",
       "categoria": "D",
-      "validation_webhook_url": "https://eo2180vhu0thrzi.m.pipedream.net/"  # URL do webhook do Pipedream
     }
   }
 }'
