@@ -99,36 +99,36 @@ A aplicação implementa três fluxos principais:
 
 git clone https://github.com/RaquelFonsec/Teste_espresso.git
 
-cd Teste_espresso
+-cd Teste_espresso
 
 Instala todas as dependências do projeto
 
-bundle install
+-bundle install
 
 Cria o banco de dados
 
-rails db
+-rails db
 
 Executa as migrações para criar as tabelas no banco de dados
 
-rails db:migrate
+-rails db:migrate
 
 
 Inicia o servidor Redis
 
-redis-server
+-redis-server
 
 Inicia o Sidekiq em segundo plano
 
-bundle exec sidekiq
+-bundle exec sidekiq
 
 Inicia o servidor Rails
 
-rails server
+-rails server
 
 Executa os testes com RSpec
 
-bundle exec rspec
+-bundle exec rspec
 
 
 
