@@ -135,10 +135,14 @@ Testes para a criação de contas a pagar com sucesso.
 Verificação de comportamento quando o servidor está indisponível.
 Validação de notificações enviadas em caso de sucesso ou falha.
 
+
+
 ValidateClientJob:
 
 Testes para validar credenciais com respostas bem-sucedidas e falhas.
 Verificação do comportamento ao lidar com exceções durante a validação.
+
+
 
 MarkAsPaidJob:
 
@@ -147,19 +151,27 @@ Verificação da lógica de tentativas de notificação e o que acontece quando 
 
 
 2. Modelos
+
+3. 
 Payable:
 
 Testes de validação para garantir que todos os campos obrigatórios estão presentes.
 Verificação das associações e métodos personalizados, como reimbursement_existe?, paid? e failed?.
+
+
 Reimbursement:
 
 Testes de validação e associações.
 Verificação do comportamento de métodos como register_payment! e payment_registered?.
 
+
+
 3. Serviços
 NotificationService:
 Testes para o envio de notificações, registrando mensagens de erro e sucesso.
 Verificação do tratamento de falhas na comunicação com APIs externas, utilizando o WebMock para simular respostas.
+
+
 
 
 4. Validações Personalizadas
@@ -182,17 +194,25 @@ Esta aplicação foi desenvolvida para automatizar a gestão de contas a pagar, 
 Criação de Contas a Pagar
 Ao receber um evento de create_payable via webhook, a aplicação dispara o job CreatePayableAccountJob, que é responsável por processar os dados do evento e registrar automaticamente as contas no ERP Omie. Esse job assegura que os dados sejam corretamente transmitidos e armazenados no sistema Omie.
 
-Marcar Contas como Pagas
+
+
+**Marcar Contas como Pagas**
 
 Quando o evento de mark_as_paid é recebido, a aplicação aciona o job MarkAsPaidJob. Esse job atualiza o status da conta no Omie, marcando-a como paga. O job garante que a sincronização entre o sistema interno e o ERP Omie ocorra de forma rápida e precisa.
+
+
 
 Validação de Contas a Pagar
 
 Antes de criar ou atualizar uma conta, o serviço PayableAccountValidator valida dados críticos como client_id, account_code, cost, entre outros. Esse processo de validação ocorre antes da execução do CreatePayableAccountJob ou MarkAsPaidJob, garantindo que apenas dados corretos e completos sejam processados.
 
+
+
 Envio de Notificações
 
 O NotificationService é responsável por centralizar o envio de notificações para APIs externas, como o Omie, e para outros endpoints configurados. Este serviço trabalha em conjunto com os jobs de criação e marcação de pagamento para garantir que todas as alterações de estado sejam comunicadas de forma adequada e em tempo real.
+
+
 
 Recepção de Webhooks
 
@@ -231,7 +251,7 @@ Após criar sua conta, você precisará obter as credenciais de API (chaves) par
 
 Uso da API
 
-Endpoint: Configuração do Cliente Integrador
+**Endpoint: Configuração do Cliente Integrador**
 
 URL: https://app.omie.com.br/api/v1/geral/clientes/
 
@@ -239,7 +259,10 @@ Método: POST
 
 Requisição:
 
-{ "codigo_cliente_integracao": "CodigoInterno0001", "email": "primeiro@ccliente.com.br", "razao_social": "Primeiro Cliente Ltda Me", "nome_fantasia": "Primeiro Cliente" }
+{ "codigo_cliente_integracao": "CodigoInterno0001",
+"email": "primeiro@ccliente.com.br",
+"razao_social": "Primeiro Cliente Ltda Me", 
+"nome_fantasia": "Primeiro Cliente" }
 
 
 Parâmetros:
@@ -252,11 +275,14 @@ nome_fantasia: Nome pelo qual a empresa é conhecida.
 
 Resposta (Exemplo):
 
-{ "codigo_cliente_omie": 0000001, "codigo_cliente_integracao": "222", "codigo_status": "0", "descricao_status": "Cliente cadastrado com sucesso!" }
+{ "codigo_cliente_omie": 0000001, 
+"codigo_cliente_integracao": "222",
+"codigo_status": "0", "descricao_status":
+"Cliente cadastrado com sucesso!" }
 
 
 
-Endpoint: Busca de Categorias
+**Endpoint: Busca de Categorias**
 
 URL: https://app.omie.com.br/api/v1/geral/categorias/
 
@@ -274,7 +300,7 @@ Código: 2.01.04
 
 
 
-Endpoint: Listar Conta Corrente
+**Endpoint: Listar Conta Corrente**
 
 URL: https://app.omie.com.br/api/v1/geral/contacorrente/
 
@@ -293,7 +319,7 @@ Utilize o valor obtido no campo nCodCC como referência ao registrar transaçõe
 
 
 
-Fluxo de Criação de Contas a Pagar
+**Fluxo de Criação de Contas a Pagar**
 
 URL: https://app.omie.com.br/api/v1/financas/contapagar/
 
@@ -301,7 +327,10 @@ Método: POST
 
 Requisição:
 
-{ "codigo_lancamento_integracao": "", "codigo_cliente_fornecedor": "CODIGO", "data_vencimento": "YYYY-MM-DD", "valor_documento": "XXX", "codigo_categoria": "CODIGO_CATEGORIA", "data_previsao": "YYYY-MM-DD", "id_conta_corrente": "ID_CONTA_CORRENTE" }
+{ "codigo_lancamento_integracao": "", "codigo_cliente_fornecedor":
+"CODIGO", "data_vencimento": "YYYY-MM-DD", "valor_documento": "XXX", 
+"codigo_categoria": "CODIGO_CATEGORIA", "data_previsao": "YYYY-MM-DD", 
+"id_conta_corrente": "ID_CONTA_CORRENTE" }
 
 
 
@@ -330,16 +359,18 @@ ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da 
 ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie.
 "xxx": Código do cliente de integração que está sendo validado.
 
+
 Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
 
 
 
-Resumo da Classe ValidateClientJob (Fluxo do Cliente Integrador)
+**Resumo da Classe ValidateClientJob (Fluxo do Cliente Integrador)**
 A classe ValidateClientJob é responsável por validar as credenciais de integração de um cliente com um sistema ERP através da API da Omie. Aqui estão os principais pontos da classe:
 
 Configuração da Fila: O job é enfileirado na fila padrão (default).
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
 Métodos Principais
+
 Método perform:
 
 Executa a validação, registra no log e chama o método validate_credentials.
@@ -347,6 +378,8 @@ Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
+
+
 Método handle_validation_failure:
 
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
@@ -367,7 +400,9 @@ Sucesso: Se as credenciais forem válidas, a classe envia uma notificação de s
 Falha: Se ocorrer uma falha, seja por erro nas credenciais ou por problemas de conexão, uma notificação de falha é enviada.
 Endpoint de Notificação:
 
+
 A notificação é enviada para um endpoint específico do sistema Espresso. 
+
 Payload da Notificação:
 
 A notificação inclui um payload (carga útil) que contém informações importantes, como:
@@ -401,6 +436,7 @@ Eventos de integração com outros sistemas.
 O controlador WebhooksController é responsável pela recepção e processamento de eventos de webhook. Este fluxo é essencial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as contas a pagar sejam criadas no ERP Omie.
 
 4. Funcionalidades do Webhook
+
 
 4.1. Recepção de Eventos
 O webhook escuta e recebe eventos do tipo create_payable, capturando os dados necessários para a criação de contas a pagar.
@@ -438,6 +474,8 @@ curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
 Observação: Substitua os valores xxx pelos IDs reais do cliente e da empresa. O URL do webhook deve ser acessível para receber os dados enviados pelo sistema.
 
 
+
+
 6. Testando a Implementação
 Para verificar a funcionalidade do webhook, utilize o seguinte comando de teste
 
@@ -469,8 +507,9 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 7. Fluxo do Job CreatePayableAccountJob
+8. 
 
-8. Executando o Job no Rails Console
+9. Executando o Job no Rails Console
 Para acionar o job diretamente no console do Rails, utilize o seguinte comando:
 
 
@@ -488,8 +527,11 @@ CreatePayableAccountJob.perform_later(client_params: {
   categoria: "D"
 })
 
+
 9. Integração do Job com o Serviço de Validação
 O job CreatePayableAccountJob utiliza o serviço PayableAccountValidator para validar os parâmetros recebidos. O funcionamento inclui:
+
+
 
 Recepção dos Parâmetros: O job recebe um conjunto de parâmetros essenciais.
 
@@ -504,7 +546,9 @@ A separação de responsabilidades entre o job e o serviço de validação resul
 
 Melhor organização do código.
 Facilidade na manutenção e extensibilidade da aplicação.
+
 11. Resumo Visual do Fluxo
+
 Imagine o fluxo da seguinte maneira:
 
 Evento Externo 
@@ -519,7 +563,11 @@ Job Cria Conta a Pagar
       ↓
 Notificações de Status
 
-Resumo do CreatePayableAccountJob
+
+
+**Resumo do CreatePayableAccountJob**
+
+
 O CreatePayableAccountJob é O job  responsável por criar contas a pagar com base em parâmetros fornecidos pelo cliente. O fluxo do job é o seguinte:
 
 Recepção de Parâmetros: O job recebe um conjunto de parâmetros do cliente, incluindo a data de vencimento.
@@ -531,8 +579,11 @@ Verificação da Disponibilidade do Servidor: Antes de prosseguir, o job verific
 Tentativas e Retentativas:
 
 Se o servidor estiver indisponível, o job notifica a falha e verifica quantas tentativas já foram feitas.
+
 Ele pode tentar criar a conta a pagar até um máximo de 3 tentativas (MAX_ATTEMPTS).
+
 Entre cada tentativa, há um intervalo de 10 segundos (RETRY_DELAY). Se ainda houver tentativas restantes, o job é reprogramado para ser executado novamente com o número de tentativas incrementado.
+
 Validação dos Parâmetros: O job valida os parâmetros recebidos. Se houver erros de validação, notifica a falha e encerra.
 
 Criação da Conta a Pagar: Se todos os dados forem válidos, o job tenta criar a conta a pagar e salva as informações no banco de dados.
@@ -549,9 +600,11 @@ Notificações: O job envia notificações sobre o sucesso ou falha da operaçã
 
 
 
-Descrição do Job MarkAsPaidJob
+**Descrição do Job MarkAsPaidJob**
+
 Finalidade
-O MarkAsPaidJob é um job que é responsável por marcar uma conta a pagar como paga e enviar uma notificação correspondente para um endpoint externo. Este processo é fundamental para garantir que as transações financeiras sejam corretamente registradas no sistema, mantendo a integridade e a precisão das informações financeiras.
+O MarkAsPaidJob é um job que é responsável por marcar uma conta a pagar como paga e enviar uma notificação correspondente para um endpoint externo. Este processo é fundamental para garantir que as 
+transações financeiras sejam corretamente registradas no sistema, mantendo a integridade e a precisão das informações financeiras.
 
 
 Funcionamento Geral
@@ -562,28 +615,35 @@ Quando o job é acionado, ele realiza uma série de etapas para verificar, atual
 O job é iniciado com um ID (payable_id), que identifica a conta a pagar que deve ser marcada como paga.
 
 
+
 2. Busca da Conta a Pagar
 O método perform começa buscando a conta a pagar no banco de dados usando o ID fornecido. Se a conta não for encontrada, o job encerra imediatamente e registra um erro.
+
 
 
 3. Verificação de Notificação
 O job verifica se a notificação precisa ser enviada, utilizando o método skip_notification?. Se a conta a pagar já tiver um reembolso registrado e pago, o job evita enviar a notificação, economizando recursos e evitando duplicações.
 
 
+
 4. Envio da Notificação
 Se a notificação não for pulada, o job chama o método handle_notification, que é responsável por enviar a notificação ao endpoint configurado. O payload da notificação é criado a partir de informações relevantes da conta a pagar.
+
 
 
 5. Atualização do Status da Conta a Pagar
 Após o envio da notificação, o job atualiza o status da conta a pagar com base na resposta recebida. Se a notificação for bem-sucedida (resposta 200), a conta é marcada como "paga". Caso contrário, o job gerencia a falha no envio da notificação.
 
 
+
 6. Gerenciamento de Falhas
 Se houver uma falha no envio da notificação, o job incrementa o contador de tentativas de notificação. Se o número de tentativas atingir 3, a conta a pagar é marcada como "failed". Caso contrário, o job reprograma a notificação para tentar novamente após 10 minutos.
 
 
+
 7. Construção do Payload
 O payload da notificação é construído com dados essenciais, como código da conta, código da categoria, código do cliente, custo, data de vencimento e o status da conta. Isso assegura que todas as informações relevantes sejam enviadas ao endpoint.
+
 
 
 8. Envio da Requisição
@@ -591,12 +651,13 @@ O job utiliza a biblioteca HTTParty para enviar uma requisição HTTP POST ao en
 
 
 Webhook
+
 Finalidade do Webhook
 O webhook é um mecanismo que permite que o sistema receba atualizações em tempo real sobre eventos externos. No contexto do MarkAsPaidJob, o webhook é responsável por iniciar o processo de marcação de uma conta a pagar como paga quando um evento específico é recebido.
 
 
 
-Funcionamento do Webhook
+**Funcionamento do Webhook**
 
 Recepção do Evento: O webhook é acionado quando um evento de pagamento é enviado para o endpoint do controlador Webhooks::WebhookEndpointsController. Por exemplo, ao receber um evento do tipo mark_as_paid, o webhook extrai o payable_id da carga útil da requisição.
 
@@ -606,6 +667,7 @@ Notificação para o Job: Ao receber o evento de mark_as_paid, o webhook inicia 
 
 
 Logs e Registro
+
 O MarkAsPaidJob e o webhook geram logs informativos e de erro durante suas execuções. Isso permite que desenvolvedores e administradores acompanhem o fluxo do job e do webhook e identifiquem rapidamente qualquer problema que ocorra durante o processo de marcação e notificação.
 
 Fluxo de Reembolso
@@ -632,6 +694,7 @@ Job marca a conta como paga e notifica o Espresso sobre o pagamento.
 
 
 Considerações Finais
+
 O MarkAsPaidJob e o webhook formam um sistema robusto para garantir que a marcação de contas a pagar como pagas seja realizada de maneira confiável e eficiente. Com suas validações e gerenciamento de falhas, eles asseguram a integridade dos registros financeiros e uma comunicação eficaz com sistemas externos.
 
 Como Executar
