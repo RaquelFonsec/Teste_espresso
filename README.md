@@ -7,7 +7,9 @@
 
   
 
-Este projeto é uma aplicação desenvolvida para integrar o sistema de reembolsos Espresso com o ERP Omie. O objetivo principal é permitir que os pedidos de reembolsos aprovados do Espresso sejam registrados no ERP Omie como contas a pagar. Além disso, a aplicação monitora o status de pagamento dessas contas e notifica o Espresso em tempo real.
+Este projeto é uma aplicação desenvolvida para integrar o sistema de reembolsos Espresso com o ERP Omie. O objetivo principal é permitir que os pedidos de reembolsos aprovados do Espresso sejam 
+
+registrados no ERP Omie como contas a pagar. Além disso, a aplicação monitora o status de pagamento dessas contas e notifica o Espresso em tempo real.
 
   
 
@@ -364,13 +366,19 @@ ValidateClientJob.perform_later(1, "omie", ENV["APP_KEY"], ENV["APP_SECRET"], "C
 Parâmetros do Comando:
 
 1: ID do cliente que você deseja validar.
+
 "omie": Nome da aplicação que está realizando a validação.
+
 ENV["APP_KEY"]: Esta variável de ambiente contém a chave de autenticação da aplicação, permitindo que o sistema se conecte ao ERP Omie.
+
 ENV["APP_SECRET"]: Esta variável de ambiente armazena o segredo da aplicação, que é utilizado em conjunto com a erp_key para autenticação no ERP Omie.
+
 "xxx": Código do cliente de integração que está sendo validado.
 
 
-Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
+Após executar o comando, é recomendável monitorar a interface do Sidekiq para verificar se o trabalho foi executado com sucesso ou se houve falhas. 
+
+Você pode acessar a interface do Sidekiq em: http://localhost:3000/sidekiq.
 
 
 
@@ -388,30 +396,40 @@ Métodos Principais
 Método perform:
 
 Executa a validação, registra no log e chama o método validate_credentials.
+
 Método validate_credentials:
 
 Realiza uma chamada GET à API da Omie para validar as credenciais.
+
 Retorna a resposta se a validação for bem-sucedida ou registra um erro se falhar.
 
 
 Método handle_validation_failure:
 
 Trata falhas de validação, com tentativas agendadas em intervalos crescentes.
+
 Notifica sobre falha se o limite máximo de tentativas for atingido.
+
 Método notify_espresso:
 
 Envia uma notificação ao endpoint designado (Espresso) com o status da validação.
+
 Registra no log o resultado da tentativa de notificação.
 
 
 Como o Webhook é Usado na Validação do Cliente Integrador
+
 Na classe ValidateClientJob, um webhook é utilizado para notificar o sistema Espresso sobre o resultado da validação das credenciais de integração do cliente. Aqui está como ele funciona:
+
 
 Notificação de Sucesso ou Falha:
 
 Após validar as credenciais do cliente com a API do Omie, a classe decide se deve notificar o Espresso sobre o sucesso ou a falha da validação.
+
 Sucesso: Se as credenciais forem válidas, a classe envia uma notificação de sucesso.
+
 Falha: Se ocorrer uma falha, seja por erro nas credenciais ou por problemas de conexão, uma notificação de falha é enviada.
+
 Endpoint de Notificação:
 
 
@@ -420,10 +438,15 @@ A notificação é enviada para um endpoint específico do sistema Espresso.
 Payload da Notificação:
 
 A notificação inclui um payload (carga útil) que contém informações importantes, como:
+
 Código do Cliente de Integração: Identificador do cliente que está sendo validado.
+
 Status: Indica se a validação foi bem-sucedida ou se houve uma falha.
+
 Erro: Se houver uma falha, a mensagem de erro correspondente é incluída.
+
 ID da Empresa: O ID da empresa associada à validação.
+
 Registro em Log:
 
 O sistema registra no log tanto o envio da notificação quanto a resposta recebida do Espresso. Isso ajuda na auditoria e no rastreamento de problemas.
@@ -436,35 +459,64 @@ O sistema registra no log tanto o envio da notificação quanto a resposta receb
 ***Fluxo de Criação de Contas a Pagar***
 
 1. Visão Geral dos Webhooks
-Os webhooks são pontos de integração que permitem a comunicação em tempo real entre sistemas. Eles atuam como "ouvintes" que capturam eventos e transmitem dados a um controlador responsável pelo processamento.
+2. 
+Os webhooks são pontos de integração que permitem a comunicação em tempo real entre sistemas.
 
-2. Criação de Webhooks Múltiplos
-O sistema suporta a criação de múltiplos webhooks, permitindo uma integração flexível com diversas funcionalidades. Isso significa que diferentes endpoints podem ser registrados para receber notificações de diferentes eventos, como:
+Eles atuam como "ouvintes" que capturam eventos e transmitem dados a um controlador responsável pelo processamento.
+
+
+4. Criação de Webhooks Múltiplos
+ 
+O sistema suporta a criação de múltiplos webhooks, permitindo uma integração flexível com diversas funcionalidades. Isso significa que diferentes endpoints podem ser registrados para receber
+
+notificações de diferentes eventos, como:
 
 Atualizações de status de contas a pagar.
+
 Notificações de novos usuários.
+
 Eventos de integração com outros sistemas.
 
 
 3. Implementação do Controlador de Webhooks
-O controlador WebhooksController é responsável pela recepção e processamento de eventos de webhook. Este fluxo é essencial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as contas a pagar sejam criadas no ERP Omie.
+4. 
+O controlador WebhooksController é responsável pela recepção e processamento de eventos de webhook.
 
-4. Funcionalidades do Webhook
+Este fluxo é essencial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as contas a pagar sejam criadas no ERP Omie.
+
+
+6. Funcionalidades do Webhook
 
 
 4.1. Recepção de Eventos
+
 O webhook escuta e recebe eventos do tipo create_payable, capturando os dados necessários para a criação de contas a pagar.
+
 4.2. Processamento de Eventos
+
 Após a recepção, os dados são enviados para o controlador WebhooksController, que valida as informações recebidas.
+
 4.3. Delegação para Validação
-O controlador realiza uma validação inicial dos dados e, em seguida, chama o serviço de validação especializado, o PayableAccountValidator, para garantir que todos os dados necessários estejam corretos.
+
+O controlador realiza uma validação inicial dos dados e, em seguida, chama o serviço de validação especializado,
+
+o PayableAccountValidator, para garantir que todos os dados necessários estejam corretos.
+
 4.4. Geração de Jobs
+
 Se a validação for bem-sucedida, o controlador invoca o job CreatePayableAccountJob, que é responsável por efetivamente criar a conta a pagar no sistema.
+
 4.5. Notificações de Status
+
 Após a criação da conta a pagar, o sistema envia notificações sobre o status da operação (sucesso ou falha) para um serviço de notificação(class NotificationService)
+
 , assegurando que o sistema de origem do evento esteja ciente do resultado da operação.
+
 5. Criação de um Endpoint de Webhook
+6. 
+   
 Para registrar um novo webhook, utilize o seguinte comando:
+
 
 
 curl -X POST http://localhost:3000/webhooks/webhook_endpoints \
@@ -491,6 +543,7 @@ Observação: Substitua os valores xxx pelos IDs reais do cliente e da empresa. 
 
 
 6. Testando a Implementação
+7. 
 Para verificar a funcionalidade do webhook, utilize o seguinte comando de teste
 
 
@@ -528,6 +581,7 @@ Para acionar o job diretamente no console do Rails, utilize o seguinte comando:
 
 
 
+
 CreatePayableAccountJob.perform_later(client_params: {
   client_id: xxxx,
   erp_key: ENV['ERP_KEY'],
@@ -543,6 +597,7 @@ CreatePayableAccountJob.perform_later(client_params: {
 
 
 9. Integração do Job com o Serviço de Validação
+    
 O job CreatePayableAccountJob utiliza o serviço PayableAccountValidator para validar os parâmetros recebidos. O funcionamento inclui:
 
 
@@ -556,9 +611,11 @@ Tratamento de Erros: Se a validação falhar, o job registra os erros e notifica
 Criação da Conta: Apenas após a validação bem-sucedida, o job prossegue para criar a conta a pagar.
 
 10. Benefícios da Estrutura
+11. 
 A separação de responsabilidades entre o job e o serviço de validação resulta em:
 
 Melhor organização do código.
+
 Facilidade na manutenção e extensibilidade da aplicação.
 
 11. Resumo Visual do Fluxo
@@ -617,66 +674,99 @@ Notificações: O job envia notificações sobre o sucesso ou falha da operaçã
 **Descrição do Job MarkAsPaidJob**
 
 Finalidade
-O MarkAsPaidJob é um job que é responsável por marcar uma conta a pagar como paga e enviar uma notificação correspondente para um endpoint externo. Este processo é fundamental para garantir que as 
+
+O MarkAsPaidJob é um job que é responsável por marcar uma conta a pagar como paga e enviar uma notificação correspondente para um endpoint externo.
+
+Este processo é fundamental para garantir que as 
+
 transações financeiras sejam corretamente registradas no sistema, mantendo a integridade e a precisão das informações financeiras.
 
 
 Funcionamento Geral
+
 Quando o job é acionado, ele realiza uma série de etapas para verificar, atualizar e notificar sobre o status de uma conta a pagar. Aqui estão os principais componentes e etapas do seu funcionamento:
 
 
 1. Execução do Job
+2. 
 O job é iniciado com um ID (payable_id), que identifica a conta a pagar que deve ser marcada como paga.
 
 
 
-2. Busca da Conta a Pagar
+3. Busca da Conta a Pagar
+4. 
 O método perform começa buscando a conta a pagar no banco de dados usando o ID fornecido. Se a conta não for encontrada, o job encerra imediatamente e registra um erro.
 
 
 
-3. Verificação de Notificação
-O job verifica se a notificação precisa ser enviada, utilizando o método skip_notification?. Se a conta a pagar já tiver um reembolso registrado e pago, o job evita enviar a notificação, economizando recursos e evitando duplicações.
+5. Verificação de Notificação
+6. 
+O job verifica se a notificação precisa ser enviada, utilizando o método skip_notification?.
+
+ Se a conta a pagar já tiver um reembolso registrado e pago, o job evita enviar a notificação, economizando recursos e evitando duplicações.
 
 
 
-4. Envio da Notificação
-Se a notificação não for pulada, o job chama o método handle_notification, que é responsável por enviar a notificação ao endpoint configurado. O payload da notificação é criado a partir de informações relevantes da conta a pagar.
+8. Envio da Notificação
+9. 
+Se a notificação não for pulada, o job chama o método handle_notification, que é responsável por enviar a notificação ao endpoint configurado.
+
+ O payload da notificação é criado a partir de informações relevantes da conta a pagar.
 
 
 
-5. Atualização do Status da Conta a Pagar
-Após o envio da notificação, o job atualiza o status da conta a pagar com base na resposta recebida. Se a notificação for bem-sucedida (resposta 200), a conta é marcada como "paga". Caso contrário, o job gerencia a falha no envio da notificação.
+11. Atualização do Status da Conta a Pagar
+    
+Após o envio da notificação, o job atualiza o status da conta a pagar com base na resposta recebida.
+
+Se a notificação for bem-sucedida (resposta 200), a conta é marcada como "paga". Caso contrário, o job gerencia a falha no envio da notificação.
 
 
 
-6. Gerenciamento de Falhas
-Se houver uma falha no envio da notificação, o job incrementa o contador de tentativas de notificação. Se o número de tentativas atingir 3, a conta a pagar é marcada como "failed". Caso contrário, o job reprograma a notificação para tentar novamente após 10 minutos.
+13. Gerenciamento de Falhas
+    
+Se houver uma falha no envio da notificação, o job incrementa o contador de tentativas de notificação. 
+
+Se o número de tentativas atingir 3, a conta a pagar é marcada como "failed". Caso contrário, o job reprograma a notificação para tentar novamente após 10 minutos.
 
 
 
-7. Construção do Payload
-O payload da notificação é construído com dados essenciais, como código da conta, código da categoria, código do cliente, custo, data de vencimento e o status da conta. Isso assegura que todas as informações relevantes sejam enviadas ao endpoint.
+15. Construção do Payload
+16. 
+O payload da notificação é construído com dados essenciais, como código da conta, código da categoria, código do cliente, custo, data de vencimento e o status da conta.
+
+Isso assegura que todas as informações relevantes sejam enviadas ao endpoint.
 
 
 
-8. Envio da Requisição
-O job utiliza a biblioteca HTTParty para enviar uma requisição HTTP POST ao endpoint especificado, contendo o payload em formato JSON. Ele também implementa tratamento de erros para gerenciar possíveis exceções durante o envio.
+18. Envio da Requisição
+
+O job utiliza a biblioteca HTTParty para enviar uma requisição HTTP POST ao endpoint especificado, contendo o payload em formato JSON.
+
+Ele também implementa tratamento de erros para gerenciar possíveis exceções durante o envio.
 
 
 Webhook
 
 Finalidade do Webhook
-O webhook é um mecanismo que permite que o sistema receba atualizações em tempo real sobre eventos externos. No contexto do MarkAsPaidJob, o webhook é responsável por iniciar o processo de marcação de uma conta a pagar como paga quando um evento específico é recebido.
+
+O webhook é um mecanismo que permite que o sistema receba atualizações em tempo real sobre eventos externos. No contexto do MarkAsPaidJob, 
+
+o webhook é responsável por iniciar o processo de marcação de uma conta a pagar como paga quando um evento específico é recebido.
 
 
 
 **Funcionamento do Webhook**
 
-Recepção do Evento: O webhook é acionado quando um evento de pagamento é enviado para o endpoint do controlador Webhooks::WebhookEndpointsController. Por exemplo, ao receber um evento do tipo mark_as_paid, o webhook extrai o payable_id da carga útil da requisição.
+Recepção do Evento: O webhook é acionado quando um evento de pagamento é enviado para o endpoint do controlador Webhooks::WebhookEndpointsController. Por exemplo, ao receber um evento do tipo 
+
+mark_as_paid, o webhook extrai o payable_id da carga útil da requisição.
 
 
-Criação de Conta a Pagar: O webhook também pode ser utilizado para criar registros de contas a pagar, conforme indicado no método receive_webhook. Caso a criação da conta a pagar seja bem-sucedida, uma notificação é enviada ao sistema Omie.
+Criação de Conta a Pagar: O webhook também pode ser utilizado para criar registros de contas a pagar, conforme indicado no método receive_webhook. 
+
+Caso a criação da conta a pagar seja bem-sucedida, uma notificação é enviada ao sistema Omie.
+
 Notificação para o Job: Ao receber o evento de mark_as_paid, o webhook inicia o MarkAsPaidJob, passando o payable_id correspondente. Isso ativa todo o fluxo de trabalho descrito anteriormente, garantindo que a conta a pagar seja devidamente processada e atualizada.
 
 
@@ -702,16 +792,21 @@ Notificações de Status
 Fluxo Completo
 
 Omie baixa a conta a pagar e envia uma notificação para o integrador.
+
 Integrador recebe a notificação e inicia o MarkAsPaidJob para processar a baixa.
+
 Job marca a conta como paga e notifica o Espresso sobre o pagamento.
 
 
 
 Considerações Finais
 
-O MarkAsPaidJob e o webhook formam um sistema robusto para garantir que a marcação de contas a pagar como pagas seja realizada de maneira confiável e eficiente. Com suas validações e gerenciamento de falhas, eles asseguram a integridade dos registros financeiros e uma comunicação eficaz com sistemas externos.
+O MarkAsPaidJob e o webhook formam um sistema robusto para garantir que a marcação de contas a pagar como pagas seja realizada de maneira confiável e eficiente. 
+
+Com suas validações e gerenciamento de falhas, eles asseguram a integridade dos registros financeiros e uma comunicação eficaz com sistemas externos.
 
 Como Executar
+
 Para executar o job, você pode utilizar o seguinte comando no console do Rails
 
 MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
