@@ -222,11 +222,11 @@ O NotificationService é responsável por centralizar o envio de notificações 
 
 
 
-Recepção de Webhooks
+**Recepção de Webhooks**
 
 A aplicação conta com endpoints dedicados para receber eventos de webhook. Quando um evento relevante é recebido, os jobs correspondentes são acionados para processar a informação, automatizando fluxos de trabalho de forma integrada.
 
-Broadcast de Webhooks
+**Broadcast de Webhooks**
 
 O BroadcastWebhookService distribui os eventos recebidos para todos os endpoints inscritos, de acordo com o tipo de evento. Essa funcionalidade garante que diversos sistemas possam ser atualizados simultaneamente, mantendo a consistência e integridade dos dados.
 
@@ -235,12 +235,14 @@ O BroadcastWebhookService distribui os eventos recebidos para todos os endpoints
 
 
 Como se Cadastrar na Omie e Obter Credenciais
+
 1. Criando uma Conta de Teste na Omie
 Para criar uma conta de teste na Omie, siga estes passos:
 
 Acesse o Site da Omie:https://developer.omie.com.br/
 
 Vá para Omie.
+
 Inscreva-se:
 
 Clique em "Experimente Grátis" ou "Comece Agora" na página inicial.
