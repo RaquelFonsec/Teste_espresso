@@ -95,7 +95,7 @@ A aplicação implementa três fluxos principais:
 ### Instalação
 
  
-1. *Clone o repositório**:
+1. Clone o repositório:
 
 ```bash
 
