@@ -152,7 +152,7 @@ Verificação da lógica de tentativas de notificação e o que acontece quando 
 
 2. Modelos
 
-3. 
+
 Payable:
 
 Testes de validação para garantir que todos os campos obrigatórios estão presentes.
@@ -182,7 +182,7 @@ Testes para validar a presença de campos obrigatórios e a lógica da data de v
 
 
 
-Visão Geral da Aplicação
+**Visão Geral da Aplicação**
 
 
 Esta aplicação foi desenvolvida para automatizar a gestão de contas a pagar, integrando dados de reembolsos aprovados no sistema Espresso com o ERP Omie. O sistema facilita a criação, validação e marcação de pagamentos de forma eficiente, utilizando uma arquitetura baseada em jobs para realizar as tarefas críticas de forma assíncrona e otimizada. Além disso, a aplicação processa eventos de webhook, desencadeando ações automáticas com base nesses eventos.
@@ -202,13 +202,13 @@ Quando o evento de mark_as_paid é recebido, a aplicação aciona o job MarkAsPa
 
 
 
-Validação de Contas a Pagar
+**Validação de Contas a Pagar**
 
 Antes de criar ou atualizar uma conta, o serviço PayableAccountValidator valida dados críticos como client_id, account_code, cost, entre outros. Esse processo de validação ocorre antes da execução do CreatePayableAccountJob ou MarkAsPaidJob, garantindo que apenas dados corretos e completos sejam processados.
 
 
 
-Envio de Notificações
+**Envio de Notificações**
 
 O NotificationService é responsável por centralizar o envio de notificações para APIs externas, como o Omie, e para outros endpoints configurados. Este serviço trabalha em conjunto com os jobs de criação e marcação de pagamento para garantir que todas as alterações de estado sejam comunicadas de forma adequada e em tempo real.
 
@@ -365,10 +365,14 @@ Após executar o comando, é recomendável monitorar a interface do Sidekiq para
 
 
 **Resumo da Classe ValidateClientJob (Fluxo do Cliente Integrador)**
+
+
 A classe ValidateClientJob é responsável por validar as credenciais de integração de um cliente com um sistema ERP através da API da Omie. Aqui estão os principais pontos da classe:
 
 Configuração da Fila: O job é enfileirado na fila padrão (default).
+
 Número Máximo de Tentativas: Limite de 3 tentativas para a validação das credenciais antes de considerar a operação como falha.
+
 Métodos Principais
 
 Método perform:
