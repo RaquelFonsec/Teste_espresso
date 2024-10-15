@@ -459,7 +459,7 @@ O sistema registra no log tanto o envio da notificação quanto a resposta receb
 ***Fluxo de Criação de Contas a Pagar***
 
 1. Visão Geral dos Webhooks
-2. 
+ 
 Os webhooks são pontos de integração que permitem a comunicação em tempo real entre sistemas.
 
 Eles atuam como "ouvintes" que capturam eventos e transmitem dados a um controlador responsável pelo processamento.
@@ -479,13 +479,13 @@ Eventos de integração com outros sistemas.
 
 
 3. Implementação do Controlador de Webhooks
-4. 
+   
 O controlador WebhooksController é responsável pela recepção e processamento de eventos de webhook.
 
 Este fluxo é essencial para registrar automaticamente os reembolsos aprovados no sistema Espresso e garantir que as contas a pagar sejam criadas no ERP Omie.
 
 
-6. Funcionalidades do Webhook
+** Funcionalidades do Webhook**
 
 
 4.1. Recepção de Eventos
@@ -513,7 +513,7 @@ Após a criação da conta a pagar, o sistema envia notificações sobre o statu
 , assegurando que o sistema de origem do evento esteja ciente do resultado da operação.
 
 5. Criação de um Endpoint de Webhook
-6. 
+   
    
 Para registrar um novo webhook, utilize o seguinte comando:
 
@@ -543,7 +543,7 @@ Observação: Substitua os valores xxx pelos IDs reais do cliente e da empresa. 
 
 
 6. Testando a Implementação
-7. 
+ 
 Para verificar a funcionalidade do webhook, utilize o seguinte comando de teste
 
 
@@ -574,7 +574,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 
 
 7. Fluxo do Job CreatePayableAccountJob
-8. 
+ 
 
 9. Executando o Job no Rails Console
 Para acionar o job diretamente no console do Rails, utilize o seguinte comando:
@@ -611,7 +611,7 @@ Tratamento de Erros: Se a validação falhar, o job registra os erros e notifica
 Criação da Conta: Apenas após a validação bem-sucedida, o job prossegue para criar a conta a pagar.
 
 10. Benefícios da Estrutura
-11. 
+ 
 A separação de responsabilidades entre o job e o serviço de validação resulta em:
 
 Melhor organização do código.
