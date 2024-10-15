@@ -102,30 +102,38 @@ git clone https://github.com/RaquelFonsec/Teste_espresso.git
 cd Teste_espresso
 
 Instala todas as dependências do projeto
+
 bundle install
 
 Cria o banco de dados
+
 rails db
 
 Executa as migrações para criar as tabelas no banco de dados
+
 rails db:migrate
 
 
 Inicia o servidor Redis
+
 redis-server
 
 Inicia o Sidekiq em segundo plano
+
 bundle exec sidekiq
 
 Inicia o servidor Rails
+
 rails server
 
 Executa os testes com RSpec
+
 bundle exec rspec
 
 
 
 Resumo dos Testes Realizados
+
 No projeto, foram implementados mais de 70 testes utilizando RSpec e WebMock para garantir a robustez e a qualidade do sistema. O WebMock foi utilizado para simular chamadas HTTP externas, permitindo testar interações com APIs sem depender de sua disponibilidade. Abaixo está uma descrição das  áreas testadas:
 
 1. Jobs e Background Processing
