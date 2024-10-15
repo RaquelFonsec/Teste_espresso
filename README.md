@@ -103,32 +103,32 @@ git clone https://github.com/RaquelFonsec/Teste_espresso.git
 
 -cd Teste_espresso
 
-Instala todas as dependências do projeto
+**Instala todas as dependências do projeto**
 
 -bundle install
 
-Cria o banco de dados
+**Cria o banco de dados**
 
 -rails db
 
-Executa as migrações para criar as tabelas no banco de dados
+**Executa as migrações para criar as tabelas no banco de dados**
 
 -rails db:migrate
 
 
-Inicia o servidor Redis
+**Inicia o servidor Redis**
 
 -redis-server
 
-Inicia o Sidekiq em segundo plano
+**Inicia o Sidekiq em segundo plano**
 
 -bundle exec sidekiq
 
-Inicia o servidor Rails
+**Inicia o servidor Rails**
 
 -rails server
 
-Executa os testes com RSpec
+**Executa os testes com RSpec**
 
 -bundle exec rspec
 
@@ -465,7 +465,7 @@ Os webhooks são pontos de integração que permitem a comunicação em tempo re
 Eles atuam como "ouvintes" que capturam eventos e transmitem dados a um controlador responsável pelo processamento.
 
 
-4. Criação de Webhooks Múltiplos
+2. Criação de Webhooks Múltiplos
  
 O sistema suporta a criação de múltiplos webhooks, permitindo uma integração flexível com diversas funcionalidades. Isso significa que diferentes endpoints podem ser registrados para receber
 
@@ -576,7 +576,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 7. Fluxo do Job CreatePayableAccountJob
  
 
-9. Executando o Job no Rails Console
+8. Executando o Job no Rails Console
 Para acionar o job diretamente no console do Rails, utilize o seguinte comando:
 
 
@@ -688,34 +688,34 @@ Quando o job é acionado, ele realiza uma série de etapas para verificar, atual
 
 
 1. Execução do Job
-2. 
-O job é iniciado com um ID (payable_id), que identifica a conta a pagar que deve ser marcada como paga.
+   
+2. O job é iniciado com um ID (payable_id), que identifica a conta a pagar que deve ser marcada como paga.
 
 
 
 3. Busca da Conta a Pagar
-4. 
+   
 O método perform começa buscando a conta a pagar no banco de dados usando o ID fornecido. Se a conta não for encontrada, o job encerra imediatamente e registra um erro.
 
 
 
-5. Verificação de Notificação
-6. 
+4. Verificação de Notificação
+   
 O job verifica se a notificação precisa ser enviada, utilizando o método skip_notification?.
 
  Se a conta a pagar já tiver um reembolso registrado e pago, o job evita enviar a notificação, economizando recursos e evitando duplicações.
 
 
 
-8. Envio da Notificação
-9. 
+5. Envio da Notificação
+   
 Se a notificação não for pulada, o job chama o método handle_notification, que é responsável por enviar a notificação ao endpoint configurado.
 
  O payload da notificação é criado a partir de informações relevantes da conta a pagar.
 
 
 
-11. Atualização do Status da Conta a Pagar
+6. Atualização do Status da Conta a Pagar
     
 Após o envio da notificação, o job atualiza o status da conta a pagar com base na resposta recebida.
 
@@ -723,7 +723,7 @@ Se a notificação for bem-sucedida (resposta 200), a conta é marcada como "pag
 
 
 
-13. Gerenciamento de Falhas
+7. Gerenciamento de Falhas
     
 Se houver uma falha no envio da notificação, o job incrementa o contador de tentativas de notificação. 
 
@@ -731,15 +731,15 @@ Se o número de tentativas atingir 3, a conta a pagar é marcada como "failed". 
 
 
 
-15. Construção do Payload
-16. 
+8. Construção do Payload
+
 O payload da notificação é construído com dados essenciais, como código da conta, código da categoria, código do cliente, custo, data de vencimento e o status da conta.
 
 Isso assegura que todas as informações relevantes sejam enviadas ao endpoint.
 
 
 
-18. Envio da Requisição
+9. Envio da Requisição
 
 O job utiliza a biblioteca HTTParty para enviar uma requisição HTTP POST ao endpoint especificado, contendo o payload em formato JSON.
 
@@ -811,7 +811,10 @@ Para executar o job, você pode utilizar o seguinte comando no console do Rails
 
 MarkAsPaidJob.perform_later(ID) # substitua pelo ID da conta a pagar que foi criada anteriormente no fluxo de contas a pagar.
 
+
 E para simular a recepção de um evento de webhook, você pode usar o seguinte comando curl:
+
+
 
 curl -X POST http://localhost:3000/webhooks/receive_webhook \
 -H "Content-Type: application/json" \
@@ -825,6 +828,7 @@ curl -X POST http://localhost:3000/webhooks/receive_webhook \
 }'
 
 {"message":"Notificação para marcar como pago em processo"}
+
 
 
 
