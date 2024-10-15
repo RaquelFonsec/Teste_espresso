@@ -97,8 +97,6 @@ A aplicação implementa três fluxos principais:
  
 1. Clone o repositório:
 
-```bash
-
 git clone https://github.com/RaquelFonsec/Teste_espresso.git
 
 cd Teste_espresso
